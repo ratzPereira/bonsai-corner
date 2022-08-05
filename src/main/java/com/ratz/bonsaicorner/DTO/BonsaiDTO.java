@@ -1,0 +1,28 @@
+package com.ratz.bonsaicorner.DTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.time.LocalDate;
+import java.util.Set;
+
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
+public class BonsaiDTO implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
+
+  private Long id;
+  private String name;
+  private int age;
+  private String description;
+  private Set<String> images;
+  private LocalDate bonsaiCreationDate;
+}
