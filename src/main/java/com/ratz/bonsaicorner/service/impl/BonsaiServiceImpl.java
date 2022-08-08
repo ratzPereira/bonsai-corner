@@ -2,6 +2,7 @@ package com.ratz.bonsaicorner.service.impl;
 
 import com.ratz.bonsaicorner.DTO.BonsaiDTO;
 import com.ratz.bonsaicorner.controller.BonsaiController;
+import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.mapper.DozerMapper;
 import com.ratz.bonsaicorner.model.Bonsai;
 import com.ratz.bonsaicorner.repository.BonsaiRepository;
@@ -36,14 +37,26 @@ public class BonsaiServiceImpl implements BonsaiService {
     return getDTOFromEntity(pageable, bonsais);
   }
 
+  @Override
+  public BonsaiDTO findBonsaiById(Long id) {
+    Bonsai bonsai = bonsaiRepository.findById(id)
+        .orElseThrow(() -> new ResourceNotFoundException("Bonsai not found with id: " + id));
 
-  private PagedModel<EntityModel<BonsaiDTO>> getDTOFromEntity(Pageable pageable, Page<Bonsai> bonsais){
+    BonsaiDTO bonsaiDTO = DozerMapper.parseObject(bonsai, BonsaiDTO.class);
+    bonsaiDTO.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(id)).withSelfRel());
+
+    return bonsaiDTO;
+  }
+
+
+  private PagedModel<EntityModel<BonsaiDTO>> getDTOFromEntity(Pageable pageable, Page<Bonsai> bonsais) {
 
     Page<BonsaiDTO> bonsaiDTOS = bonsais.map(bonsai -> DozerMapper.parseObject(bonsai, BonsaiDTO.class));
 
     //bonsaiDTOS.map(bonsaiDTO -> bonsaiDTO.add(linkTo(methodOn(BonsaiController.class).findb)))
 
-    Link link = linkTo(methodOn(BonsaiController.class).findAllBonsai(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+    Link link = linkTo(methodOn(BonsaiController.class)
+        .findAllBonsai(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
 
     return assembler.toModel(bonsaiDTOS, link);
   }

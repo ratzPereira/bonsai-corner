@@ -7,11 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("/api/v1/bonsai")
@@ -24,14 +22,21 @@ public class BonsaiController {
   }
 
   @GetMapping
-  public ResponseEntity<PagedModel<EntityModel<BonsaiDTO>>> findAllBonsai(@RequestParam(value = "page", defaultValue = "0") Integer page,
-                                                                          @RequestParam(value = "size", defaultValue = "12") Integer size,
-                                                                          @RequestParam(value = "direction", defaultValue = "asc") String direction){
+  public ResponseEntity<PagedModel<EntityModel<BonsaiDTO>>> findAllBonsai
+      (@RequestParam(value = "page", defaultValue = "0") Integer page,
+       @RequestParam(value = "size", defaultValue = "12") Integer size,
+       @RequestParam(value = "direction", defaultValue = "asc") String direction) {
 
     Sort.Direction sortDirection = "desc".equalsIgnoreCase(direction) ? Sort.Direction.DESC : Sort.Direction.ASC;
 
     Pageable pageable = PageRequest.of(page, size, Sort.by(sortDirection, "name"));
 
     return ResponseEntity.ok(bonsaiService.findAll(pageable));
+  }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<BonsaiDTO> findBonsaiById(@PathVariable Long id) {
+
+    return new ResponseEntity<>(bonsaiService.findBonsaiById(id), HttpStatus.OK);
   }
 }

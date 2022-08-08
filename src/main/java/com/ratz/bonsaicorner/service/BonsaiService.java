@@ -8,4 +8,6 @@ import org.springframework.hateoas.PagedModel;
 public interface BonsaiService {
 
   PagedModel<EntityModel<BonsaiDTO>> findAll(Pageable pageable);
+
+  BonsaiDTO findBonsaiById(Long id);
 }
