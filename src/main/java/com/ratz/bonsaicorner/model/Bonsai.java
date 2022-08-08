@@ -37,4 +37,5 @@ public class Bonsai implements Serializable {
 
   @Column(name = "bonsai_creation_date")
   private LocalDate bonsaiCreationDate;
+
 }
