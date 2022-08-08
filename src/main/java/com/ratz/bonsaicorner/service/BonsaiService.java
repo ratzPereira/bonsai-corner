@@ -10,4 +10,6 @@ public interface BonsaiService {
   PagedModel<EntityModel<BonsaiDTO>> findAll(Pageable pageable);
 
   BonsaiDTO findBonsaiById(Long id);
+
+  BonsaiDTO createBonsai(BonsaiDTO bonsaiDTO);
 }

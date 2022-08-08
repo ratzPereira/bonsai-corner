@@ -21,6 +21,12 @@ public class BonsaiController {
     this.bonsaiService = bonsaiService;
   }
 
+  @PostMapping
+  public ResponseEntity<BonsaiDTO> createBonsai(@RequestBody BonsaiDTO bonsaiDTO) {
+
+    return new ResponseEntity<>(bonsaiService.createBonsai(bonsaiDTO), HttpStatus.CREATED);
+  }
+
   @GetMapping
   public ResponseEntity<PagedModel<EntityModel<BonsaiDTO>>> findAllBonsai
       (@RequestParam(value = "page", defaultValue = "0") Integer page,
@@ -37,6 +43,6 @@ public class BonsaiController {
   @GetMapping("/{id}")
   public ResponseEntity<BonsaiDTO> findBonsaiById(@PathVariable Long id) {
 
-    return new ResponseEntity<>(bonsaiService.findBonsaiById(id), HttpStatus.OK);
+    return ResponseEntity.ok(bonsaiService.findBonsaiById(id));
   }
 }

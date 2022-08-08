@@ -1,5 +1,6 @@
 package com.ratz.bonsaicorner.DTO;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -25,5 +26,7 @@ public class BonsaiDTO extends RepresentationModel<BonsaiDTO> implements Seriali
   private int age;
   private String description;
   private Set<String> images;
+
+  @JsonFormat(pattern = "dd-MM-yyyy")
   private LocalDate bonsaiCreationDate;
 }

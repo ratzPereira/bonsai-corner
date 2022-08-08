@@ -2,6 +2,7 @@ package com.ratz.bonsaicorner.service.impl;
 
 import com.ratz.bonsaicorner.DTO.BonsaiDTO;
 import com.ratz.bonsaicorner.controller.BonsaiController;
+import com.ratz.bonsaicorner.exceptions.RequiredObjectIsNullException;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.mapper.DozerMapper;
 import com.ratz.bonsaicorner.model.Bonsai;
@@ -48,6 +49,20 @@ public class BonsaiServiceImpl implements BonsaiService {
     return bonsaiDTO;
   }
 
+
+  @Override
+  public BonsaiDTO createBonsai(BonsaiDTO bonsaiDTO) {
+
+    if (bonsaiDTO == null) throw new RequiredObjectIsNullException();
+
+    Bonsai bonsai = DozerMapper.parseObject(bonsaiDTO, Bonsai.class);
+    bonsaiRepository.save(bonsai);
+
+    BonsaiDTO bonsaiDTOToReturn = DozerMapper.parseObject(bonsai, BonsaiDTO.class);
+    bonsaiDTOToReturn.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsaiDTOToReturn.getId())).withSelfRel());
+
+    return bonsaiDTOToReturn;
+  }
 
   private PagedModel<EntityModel<BonsaiDTO>> getDTOFromEntity(Pageable pageable, Page<Bonsai> bonsais) {
 
