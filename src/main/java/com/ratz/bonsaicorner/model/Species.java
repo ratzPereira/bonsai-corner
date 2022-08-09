@@ -64,4 +64,7 @@ public class Species implements Serializable {
   @ManyToOne
   @JoinColumn(name = "treeGroup_id", nullable = false)
   private TreeGroup treeGroup;
+
+//  @OneToMany(mappedBy = "species")
+//  private Set<Bonsai> bonsais;
 }

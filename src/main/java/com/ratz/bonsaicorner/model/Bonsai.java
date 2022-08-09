@@ -38,4 +38,7 @@ public class Bonsai implements Serializable {
   @Column(name = "bonsai_creation_date")
   private LocalDate bonsaiCreationDate;
 
+//  @ManyToOne
+//  @JoinColumn(name = "species_id")
+//  private Species species;
 }
