@@ -1,6 +1,8 @@
 package com.ratz.bonsaicorner.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serial;

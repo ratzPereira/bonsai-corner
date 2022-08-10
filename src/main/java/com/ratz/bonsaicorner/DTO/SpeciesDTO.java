@@ -22,7 +22,8 @@ public class SpeciesDTO extends RepresentationModel<SpeciesDTO> implements Seria
 
   @Mapping("id")
   private Long id;
-  private String species;
+  
+  private String speciesName;
   private String description;
   private String pruning;
   private String watering;

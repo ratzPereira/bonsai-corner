@@ -51,7 +51,7 @@ public class SpeciesServiceImpl implements SpeciesService {
     if (family == null || treeGroup == null)
       throw new ResourceNotFoundException("Family or TreeGroup does not exist!");
 
-    if (speciesRepository.existsBySpecies(speciesDTO.getSpecies()))
+    if (speciesRepository.existsBySpeciesName(speciesDTO.getSpeciesName()))
       throw new ResourceAlreadyExistException("That species name already exist!");
 
 
