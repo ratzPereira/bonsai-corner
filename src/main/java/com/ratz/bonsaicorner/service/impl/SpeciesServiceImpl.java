@@ -67,6 +67,14 @@ public class SpeciesServiceImpl implements SpeciesService {
     return returnSpeciesDTO;
   }
 
+  @Override
+  public void deleteSpecies(Long id) {
+
+    Species species = speciesRepository.findById(id).orElseThrow(
+        () -> new ResourceNotFoundException("Species with ID " + id + " not found"));
+
+    speciesRepository.delete(species);
+  }
 
   private Species speciesDtoToEntity(SpeciesDTO speciesDTO) {
     return mapper.map(speciesDTO, Species.class);
