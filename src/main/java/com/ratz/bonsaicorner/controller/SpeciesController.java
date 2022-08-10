@@ -3,6 +3,7 @@ package com.ratz.bonsaicorner.controller;
 
 import com.ratz.bonsaicorner.DTO.SpeciesDTO;
 import com.ratz.bonsaicorner.service.impl.SpeciesServiceImpl;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -25,5 +26,13 @@ public class SpeciesController {
   public SpeciesDTO createNewSpecies(@RequestBody SpeciesDTO speciesDTO) {
 
     return speciesService.createSpecies(speciesDTO);
+  }
+
+  @DeleteMapping("/{id}")
+  public ResponseEntity<?> deleteSpecies(@PathVariable Long id) {
+
+    speciesService.deleteSpecies(id);
+
+    return ResponseEntity.noContent().build();
   }
 }

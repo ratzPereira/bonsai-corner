@@ -55,6 +55,7 @@ public class Species implements Serializable {
 
   @Column(name = "common_bonsai_styles")
   @ElementCollection
+  @CollectionTable(name = "species_common_bonsai_styles", joinColumns = @JoinColumn(name = "species_id"))
   Set<String> commonBonsaiStyles;
 
   @ManyToOne
