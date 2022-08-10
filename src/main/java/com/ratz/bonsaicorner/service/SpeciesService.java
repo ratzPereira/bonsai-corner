@@ -6,4 +6,6 @@ public interface SpeciesService {
   SpeciesDTO getSpeciesById(Long id);
 
   SpeciesDTO createSpecies(SpeciesDTO speciesDTO);
+
+  void deleteSpecies(Long id);
 }
