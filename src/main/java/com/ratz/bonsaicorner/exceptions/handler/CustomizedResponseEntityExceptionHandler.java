@@ -1,6 +1,7 @@
 package com.ratz.bonsaicorner.exceptions.handler;
 
 import com.ratz.bonsaicorner.exceptions.ExceptionResponse;
+import com.ratz.bonsaicorner.exceptions.ResourceAlreadyExistException;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,5 +35,13 @@ public class CustomizedResponseEntityExceptionHandler extends ResponseEntityExce
     return new ResponseEntity<>(exceptionResponse, HttpStatus.NOT_FOUND);
   }
 
+  @ExceptionHandler(ResourceAlreadyExistException.class)
+  public final ResponseEntity<ExceptionResponse> handleResourceAlreadyExist(Exception ex, WebRequest request) {
+
+    ExceptionResponse exceptionResponse =
+        new ExceptionResponse(new Date(), ex.getMessage(), request.getDescription(false));
+
+    return new ResponseEntity<>(exceptionResponse, HttpStatus.BAD_REQUEST);
+  }
 
 }

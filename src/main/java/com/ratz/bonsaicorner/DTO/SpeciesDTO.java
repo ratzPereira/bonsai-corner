@@ -1,7 +1,6 @@
 package com.ratz.bonsaicorner.DTO;
 
-import com.ratz.bonsaicorner.model.Family;
-import com.ratz.bonsaicorner.model.TreeGroup;
+import com.github.dozermapper.core.Mapping;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -21,7 +20,8 @@ public class SpeciesDTO extends RepresentationModel<SpeciesDTO> implements Seria
   @Serial
   private static final long serialVersionUID = 1L;
 
-
+  @Mapping("id")
+  private Long id;
   private String species;
   private String description;
   private String pruning;
@@ -32,7 +32,7 @@ public class SpeciesDTO extends RepresentationModel<SpeciesDTO> implements Seria
   private String regions;
   private String sunExposure;
   private String fertilizing;
-  private Family family;
-  private TreeGroup group;
+  private String family;
+  private String group;
   Set<String> commonBonsaiStyles;
 }
