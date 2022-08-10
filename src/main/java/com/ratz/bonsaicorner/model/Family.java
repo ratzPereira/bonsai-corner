@@ -1,5 +1,6 @@
 package com.ratz.bonsaicorner.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class Family implements Serializable {
   @Column(name = "familyName")
   private String familyName;
 
-  @OneToMany(mappedBy = "family")
+  @OneToMany(mappedBy = "family", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private Set<Species> species;
 }

@@ -1,5 +1,6 @@
 package com.ratz.bonsaicorner.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,6 +26,7 @@ public class TreeGroup implements Serializable {
   @Column(name = "tree_group_name")
   private String treeGroupName;
 
-  @OneToMany(mappedBy = "treeGroup")
+  @OneToMany(mappedBy = "treeGroup", cascade = CascadeType.ALL, orphanRemoval = true)
+  @JsonIgnore
   private Set<Species> species;
 }

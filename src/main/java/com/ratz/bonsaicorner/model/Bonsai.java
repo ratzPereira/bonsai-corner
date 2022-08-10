@@ -1,6 +1,8 @@
 package com.ratz.bonsaicorner.model;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.io.Serial;
@@ -38,4 +40,7 @@ public class Bonsai implements Serializable {
   @Column(name = "bonsai_creation_date")
   private LocalDate bonsaiCreationDate;
 
+  @ManyToOne
+  @JoinColumn(name = "species_id")
+  private Species species;
 }

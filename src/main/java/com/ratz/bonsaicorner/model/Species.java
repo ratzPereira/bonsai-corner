@@ -24,7 +24,7 @@ public class Species implements Serializable {
   private Long id;
 
   @Column(name = "name")
-  private String species;
+  private String speciesName;
 
   @Column(name = "description")
   private String description;
@@ -64,4 +64,5 @@ public class Species implements Serializable {
   @ManyToOne
   @JoinColumn(name = "treeGroup_id", nullable = false)
   private TreeGroup treeGroup;
+
 }
