@@ -6,6 +6,9 @@ import com.ratz.bonsaicorner.service.impl.SpeciesServiceImpl;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
+import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
+
 @RestController
 @RequestMapping("/api/v1/species")
 public class SpeciesController {
@@ -16,13 +19,13 @@ public class SpeciesController {
     this.speciesService = speciesService;
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(value = "/{id}", produces = {APPLICATION_JSON, APPLICATION_XML})
   public SpeciesDTO getSpeciesById(@PathVariable Long id) {
 
     return speciesService.getSpeciesById(id);
   }
 
-  @PostMapping
+  @PostMapping(produces = {APPLICATION_JSON, APPLICATION_XML}, consumes = {APPLICATION_JSON, APPLICATION_XML})
   public SpeciesDTO createNewSpecies(@RequestBody SpeciesDTO speciesDTO) {
 
     return speciesService.createSpecies(speciesDTO);

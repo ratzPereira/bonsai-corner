@@ -6,6 +6,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
+import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
+
 @RestController
 @RequestMapping("/api/v1/family")
 public class FamilyController {
@@ -16,13 +19,13 @@ public class FamilyController {
     this.familyService = familyService;
   }
 
-  @PostMapping
+  @PostMapping(produces = {APPLICATION_JSON, APPLICATION_XML}, consumes = {APPLICATION_JSON, APPLICATION_XML})
   public ResponseEntity<FamilyDTO> saveFamily(@RequestBody FamilyDTO familyDTO) {
 
     return new ResponseEntity<>(familyService.saveFamily(familyDTO), HttpStatus.CREATED);
   }
 
-  @GetMapping("/{id}")
+  @GetMapping(value = "/{id}", produces = {APPLICATION_JSON, APPLICATION_XML})
   public ResponseEntity<FamilyDTO> getFamilyById(@PathVariable Long id) {
 
     return ResponseEntity.ok(familyService.findFamilyById(id));
