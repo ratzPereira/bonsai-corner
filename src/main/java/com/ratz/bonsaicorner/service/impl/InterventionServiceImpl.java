@@ -1,6 +1,7 @@
 package com.ratz.bonsaicorner.service.impl;
 
 import com.ratz.bonsaicorner.DTO.InterventionDTO;
+import com.ratz.bonsaicorner.controller.InterventionController;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.model.Bonsai;
 import com.ratz.bonsaicorner.model.Intervention;
@@ -12,7 +13,9 @@ import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
+
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
 @AllArgsConstructor
@@ -33,7 +36,10 @@ public class InterventionServiceImpl implements InterventionService {
     intervention.setBonsai(bonsai);
 
     interventionRepository.save(intervention);
-    return interventionToDTO(intervention);
+
+    InterventionDTO interventionDTOToReturn = interventionToDTO(intervention);
+    interventionDTOToReturn.add(linkTo(methodOn(InterventionController.class).getInterventionById(intervention.getId())).withSelfRel());
+    return interventionDTOToReturn;
   }
 
   @Override
@@ -41,12 +47,27 @@ public class InterventionServiceImpl implements InterventionService {
 
     List<Intervention> interventions = interventionRepository.findByBonsaiId(id);
 
-    if (interventions.isEmpty()) {
-
+    if (interventions.isEmpty())
       throw new ResourceNotFoundException("Interventions not found for the bonsai with the ID " + id);
+
+    List<InterventionDTO> interventionDTOS = interventions.stream().map(this::interventionToDTO).toList();
+
+    for (InterventionDTO interventionDTO : interventionDTOS) {
+      interventionDTO.add(linkTo(methodOn(InterventionController.class).getInterventionById(interventionDTO.getId())).withSelfRel());
     }
 
-    return interventions.stream().map(this::interventionToDTO).collect(Collectors.toList());
+    return interventionDTOS;
+  }
+
+  @Override
+  public InterventionDTO getInterventionById(Long id) {
+
+    Intervention intervention = interventionRepository.findById(id).orElseThrow(() ->
+        new ResourceNotFoundException("Intervention with the ID " + id + "  not found!"));
+
+    InterventionDTO interventionDTOToReturn = interventionToDTO(intervention);
+    interventionDTOToReturn.add(linkTo(methodOn(InterventionController.class).getInterventionById(id)).withSelfRel());
+    return interventionDTOToReturn;
   }
 
 
