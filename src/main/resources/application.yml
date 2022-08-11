@@ -22,3 +22,6 @@ flyway:
   schemas: bonsai_corner
   user: root
   password: root
+
+cors:
+  originPatterns: http://localhost:8888, http://localhost:8080
