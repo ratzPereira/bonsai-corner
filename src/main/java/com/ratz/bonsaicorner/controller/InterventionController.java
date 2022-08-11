@@ -27,4 +27,10 @@ public class InterventionController {
 
     return interventionService.getInterventionsByBonsaiId(id);
   }
+
+  @GetMapping("/{id}")
+  public ResponseEntity<InterventionDTO> getInterventionById(@PathVariable Long id) {
+
+    return new ResponseEntity<>(interventionService.getInterventionById(id), HttpStatus.OK);
+  }
 }

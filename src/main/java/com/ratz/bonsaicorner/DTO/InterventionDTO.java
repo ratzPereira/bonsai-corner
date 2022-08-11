@@ -2,12 +2,12 @@ package com.ratz.bonsaicorner.DTO;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.ratz.bonsaicorner.enums.InterventionStatus;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.springframework.hateoas.RepresentationModel;
 
 import javax.validation.constraints.Size;
+import java.io.Serial;
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.Set;
 
@@ -15,7 +15,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class InterventionDTO {
+@ToString
+public class InterventionDTO extends RepresentationModel<BonsaiDTO> implements Serializable {
+
+  @Serial
+  private static final long serialVersionUID = 1L;
 
   private Long id;
 

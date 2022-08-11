@@ -9,4 +9,6 @@ public interface InterventionService {
   InterventionDTO createIntervention(Long id, InterventionDTO interventionDTO);
 
   List<InterventionDTO> getInterventionsByBonsaiId(Long id);
+
+  InterventionDTO getInterventionById(Long id);
 }
