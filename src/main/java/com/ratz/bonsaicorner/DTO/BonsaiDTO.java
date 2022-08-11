@@ -11,6 +11,7 @@ import org.springframework.hateoas.RepresentationModel;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.List;
 import java.util.Set;
 
 @Data
@@ -32,5 +33,5 @@ public class BonsaiDTO extends RepresentationModel<BonsaiDTO> implements Seriali
   private LocalDate bonsaiCreationDate;
 
   private Species species;
-
+  private List<InterventionDTO> interventionList;
 }

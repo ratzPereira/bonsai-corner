@@ -8,6 +8,8 @@ import javax.persistence.*;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 @Entity
@@ -43,4 +45,7 @@ public class Bonsai implements Serializable {
   @ManyToOne
   @JoinColumn(name = "species_id")
   private Species species;
+
+  @OneToMany(mappedBy = "bonsai", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Intervention> interventionList = new ArrayList<>();
 }
