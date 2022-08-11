@@ -1,4 +1,4 @@
-package com.ratz.bonsaicorner.swagger;
+package com.ratz.bonsaicorner.integration.swagger;
 
 import com.ratz.bonsaicorner.integration.AbstractIntegrationTest;
 import org.junit.jupiter.api.Test;

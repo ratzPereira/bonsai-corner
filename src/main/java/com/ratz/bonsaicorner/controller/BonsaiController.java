@@ -48,4 +48,6 @@ public class BonsaiController {
 
     return ResponseEntity.ok(bonsaiService.findBonsaiById(id));
   }
+
+  //TODO: Delete bonsai
 }
