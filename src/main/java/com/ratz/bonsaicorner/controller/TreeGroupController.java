@@ -30,4 +30,6 @@ public class TreeGroupController {
 
     return ResponseEntity.ok(treeGroupService.findTreeGroupById(id));
   }
+
+  //TODO: Get all endpoint
 }

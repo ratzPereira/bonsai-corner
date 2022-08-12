@@ -30,4 +30,6 @@ public class FamilyController {
 
     return ResponseEntity.ok(familyService.findFamilyById(id));
   }
+
+  //TODO: Get all endpoint
 }
