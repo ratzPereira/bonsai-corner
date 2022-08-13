@@ -9,19 +9,22 @@ import com.ratz.bonsaicorner.mapper.DozerMapper;
 import com.ratz.bonsaicorner.model.TreeGroup;
 import com.ratz.bonsaicorner.repository.TreeGroupRepository;
 import com.ratz.bonsaicorner.service.TreeGroupService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@AllArgsConstructor
 public class TreeGroupServiceImpl implements TreeGroupService {
 
+  private ModelMapper modelMapper;
   private TreeGroupRepository treeGroupRepository;
 
-  public TreeGroupServiceImpl(TreeGroupRepository treeGroupRepository) {
-    this.treeGroupRepository = treeGroupRepository;
-  }
 
   @Override
   public TreeGroupDTO saveTreeGroup(TreeGroupDTO treeGroupDTO) {
@@ -50,5 +53,33 @@ public class TreeGroupServiceImpl implements TreeGroupService {
     treeGroupDTO.add(linkTo(methodOn(TreeGroupController.class).getTreeGroupById(id)).withSelfRel());
 
     return treeGroupDTO;
+  }
+
+  @Override
+  public List<TreeGroupDTO> findAllTreeGroups() {
+
+    List<TreeGroup> treeGroups = treeGroupRepository.findAll();
+
+    if (treeGroups.isEmpty())
+      throw new ResourceNotFoundException("Tree Groups not found");
+
+    List<TreeGroupDTO> treeGroupDTOS = treeGroups.stream().map(this::treeGroupToDTO).toList();
+
+    for (TreeGroupDTO treeGroupDTO : treeGroupDTOS) {
+      treeGroupDTO.add(linkTo(methodOn(TreeGroupController.class).getTreeGroupById(treeGroupDTO.getId())).withSelfRel());
+    }
+
+    return treeGroupDTOS;
+  }
+
+
+  private TreeGroup treeGroupDTOToEntity(TreeGroupDTO treeGroupDTO) {
+
+    return modelMapper.map(treeGroupDTO, TreeGroup.class);
+  }
+
+  private TreeGroupDTO treeGroupToDTO(TreeGroup treeGroup) {
+
+    return modelMapper.map(treeGroup, TreeGroupDTO.class);
   }
 }
