@@ -2,6 +2,7 @@ package com.ratz.bonsaicorner.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
 import javax.persistence.*;
@@ -10,6 +11,7 @@ import java.io.Serial;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class Permission implements GrantedAuthority {
 
   @Serial
@@ -21,9 +23,6 @@ public class Permission implements GrantedAuthority {
 
   @Column(nullable = false)
   private String description;
-
-  public Permission() {
-  }
 
   @Override
   public String getAuthority() {

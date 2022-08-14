@@ -48,4 +48,8 @@ public class Bonsai implements Serializable {
 
   @OneToMany(mappedBy = "bonsai", cascade = CascadeType.ALL, orphanRemoval = true)
   private List<Intervention> interventionList = new ArrayList<>();
+
+  @ManyToOne(fetch = FetchType.LAZY)
+  @JoinColumn(name = "user_id", nullable = false)
+  private User user;
 }

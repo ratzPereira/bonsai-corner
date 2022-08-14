@@ -25,7 +25,6 @@ public class User implements Serializable, UserDetails {
 
 
   @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
   @Column(name = "user_name", unique = true)
@@ -40,6 +39,9 @@ public class User implements Serializable, UserDetails {
   @Column(nullable = false)
   private String password;
 
+  @Column(nullable = false)
+  private String email;
+
   private Boolean accountNonExpired;
 
   private Boolean accountNonLocked;
@@ -53,6 +55,11 @@ public class User implements Serializable, UserDetails {
       inverseJoinColumns = {@JoinColumn(name = "id_permission")})
   private List<Permission> permissions;
 
+  @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+  private List<Bonsai> bonsaiList = new ArrayList<>();
+
+  @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
+  private Profile profile;
 
   public List<String> getRoles() {
 
