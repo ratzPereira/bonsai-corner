@@ -8,4 +8,6 @@ public interface UserService {
   String getCurrentUsernameFromContext();
 
   User findByUsername(String username);
+
+  Boolean isTheResourceOwner(Long bonsaiUserId);
 }

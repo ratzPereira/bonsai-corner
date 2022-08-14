@@ -37,15 +37,16 @@ public class BonsaiServiceImpl implements BonsaiService {
   @Override
   public PagedModel<EntityModel<BonsaiDTO>> findAll(Pageable pageable) {
 
-    Page<Bonsai> bonsais = bonsaiRepository.findAll(pageable);
+    User user = userService.findByUsername(userService.getCurrentUsernameFromContext());
+
+    Page<Bonsai> bonsais = bonsaiRepository.findAllByUser(user, pageable);
 
     return getDTOFromEntity(pageable, bonsais);
   }
 
   @Override
   public BonsaiDTO findBonsaiById(Long id) {
-    Bonsai bonsai = bonsaiRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Bonsai not found with id: " + id));
+    Bonsai bonsai = getBonsai(id);
 
     BonsaiDTO bonsaiDTO = mapBonsaiDTOToBonsai(bonsai);
     bonsaiDTO.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(id)).withSelfRel());
@@ -76,6 +77,8 @@ public class BonsaiServiceImpl implements BonsaiService {
     return bonsaiDTOToReturn;
   }
 
+
+  //helper methods
   private PagedModel<EntityModel<BonsaiDTO>> getDTOFromEntity(Pageable pageable, Page<Bonsai> bonsais) {
 
     Page<BonsaiDTO> bonsaiDTOS = bonsais.map(bonsai -> mapBonsaiDTOToBonsai(bonsai));
@@ -89,6 +92,15 @@ public class BonsaiServiceImpl implements BonsaiService {
     return assembler.toModel(bonsaiDTOS, link);
   }
 
+  private Bonsai getBonsai(Long id) {
+    Bonsai bonsai = bonsaiRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bonsai with the id " + id + "not found!"));
+
+    if (!userService.isTheResourceOwner(bonsai.getUser().getId())) {
+
+      throw new ResourceNotFoundException("Bonsai with the id " + id + "not found!");
+    }
+    return bonsai;
+  }
 
   private Bonsai mapBonsaiToBonsaiDTO(BonsaiDTO bonsaiDTO) {
 

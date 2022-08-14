@@ -46,5 +46,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
     return ((UserDetails) principal).getUsername();
   }
-  
+
+  @Override
+  public Boolean isTheResourceOwner(Long bonsaiUserId) {
+
+    User user = userRepository.findByUsername(getCurrentUsernameFromContext())
+        .orElseThrow(() -> new UsernameNotFoundException("User not found!"));
+
+    return user.getId().equals(bonsaiUserId);
+
+  }
+
 }
