@@ -3,6 +3,7 @@ package com.ratz.bonsaicorner.service.impl;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
 import com.ratz.bonsaicorner.DTO.security.TokenDTO;
+import com.ratz.bonsaicorner.email.EmailSenderService;
 import com.ratz.bonsaicorner.exceptions.ResourceAlreadyExistException;
 import com.ratz.bonsaicorner.model.User;
 import com.ratz.bonsaicorner.repository.PermissionRepository;
@@ -29,6 +30,7 @@ public class AuthServiceImpl implements AuthService {
   private UserRepository userRepository;
   private PasswordEncoder passwordEncoder;
   private PermissionRepository permissionRepository;
+  private EmailSenderService emailSenderService;
 
   @Override
   @SuppressWarnings("rawtypes")
@@ -108,5 +110,10 @@ public class AuthServiceImpl implements AuthService {
 
     userRepository.save(user);
 
+    String body = "Hello " + user.getFirstName() + " " + user.getLastName() +
+        " thanks for your registration and welcome to MyBonsaiCorner! You can now add and show the world your trees!";
+
+    String subject = "Welcome to MyBonsaiCorner";
+    emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
   }
 }

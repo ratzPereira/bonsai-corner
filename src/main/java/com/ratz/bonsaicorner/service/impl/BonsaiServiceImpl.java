@@ -93,12 +93,14 @@ public class BonsaiServiceImpl implements BonsaiService {
   }
 
   private Bonsai getBonsai(Long id) {
-    Bonsai bonsai = bonsaiRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Bonsai with the id " + id + "not found!"));
+    Bonsai bonsai = bonsaiRepository.findById(id).orElseThrow(
+        () -> new ResourceNotFoundException("Bonsai with the id " + id + "not found!"));
 
     if (!userService.isTheResourceOwner(bonsai.getUser().getId())) {
 
       throw new ResourceNotFoundException("Bonsai with the id " + id + "not found!");
     }
+
     return bonsai;
   }
 
