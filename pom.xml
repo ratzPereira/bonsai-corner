@@ -18,6 +18,8 @@
         <dozer.version>6.4.0</dozer.version>
         <testcontainers.version>1.17.3</testcontainers.version>
         <rest-assured.version>4.5.0</rest-assured.version>
+        <java-jwt.version>3.18.3</java-jwt.version>
+
     </properties>
     <dependencies>
         <dependency>
@@ -83,7 +85,7 @@
             <groupId>org.flywaydb</groupId>
             <artifactId>flyway-mysql</artifactId>
         </dependency>
-        
+
         <!--MAPPER-->
         <dependency>
             <groupId>org.modelmapper</groupId>
@@ -125,6 +127,20 @@
             <groupId>com.fasterxml.jackson.dataformat</groupId>
             <artifactId>jackson-dataformat-xml</artifactId>
         </dependency>
+
+        <!--        JWT-->
+        <dependency>
+            <groupId>com.auth0</groupId>
+            <artifactId>java-jwt</artifactId>
+            <version>${java-jwt.version}</version>
+        </dependency>
+
+        <!--        SECURITY-->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
+
     </dependencies>
     <dependencyManagement>
         <dependencies>
