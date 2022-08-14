@@ -1,4 +1,7 @@
 spring:
+  mvc:
+    pathmatch:
+      matching-strategy: ant_path_matcher
   flyway:
     baseline-on-migrate: true
   datasource:
@@ -16,6 +19,17 @@ spring:
       hibernate:
         dialect: org.hibernate.dialect.MySQL8Dialect
     show-sql: true
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: mybonsaicorner@gmail.com
+    password: gzihtpczurueuwdz
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
 flyway:
   url: jdbc:mysql://localhost:3306/

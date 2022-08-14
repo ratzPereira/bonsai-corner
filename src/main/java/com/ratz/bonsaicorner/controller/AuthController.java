@@ -5,7 +5,6 @@ import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
 import com.ratz.bonsaicorner.service.impl.AuthServiceImpl;
 import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -15,7 +14,6 @@ import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
 
 @RestController
-@Tag(name = "Authentication endpoint")
 @RequestMapping("/auth")
 @AllArgsConstructor
 public class AuthController {
