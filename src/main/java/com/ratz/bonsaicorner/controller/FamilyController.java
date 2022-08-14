@@ -1,10 +1,10 @@
 package com.ratz.bonsaicorner.controller;
 
 import com.ratz.bonsaicorner.DTO.FamilyDTO;
-import com.ratz.bonsaicorner.DTO.TreeGroupDTO;
 import com.ratz.bonsaicorner.service.impl.FamilyServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +23,7 @@ public class FamilyController {
   }
 
   @PostMapping(produces = {APPLICATION_JSON, APPLICATION_XML}, consumes = {APPLICATION_JSON, APPLICATION_XML})
+  @PreAuthorize("hasAuthority('MANAGER')")
   public ResponseEntity<FamilyDTO> saveFamily(@RequestBody FamilyDTO familyDTO) {
 
     return new ResponseEntity<>(familyService.saveFamily(familyDTO), HttpStatus.CREATED);

@@ -9,6 +9,7 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
@@ -25,6 +26,7 @@ public class BonsaiController {
   }
 
   @PostMapping(produces = {APPLICATION_JSON, APPLICATION_XML}, consumes = {APPLICATION_JSON, APPLICATION_XML})
+  @PreAuthorize("hasRole('ADMIN')")
   public ResponseEntity<BonsaiDTO> createBonsai(@RequestBody BonsaiDTO bonsaiDTO) {
 
     return new ResponseEntity<>(bonsaiService.createBonsai(bonsaiDTO), HttpStatus.CREATED);

@@ -4,6 +4,7 @@ import com.ratz.bonsaicorner.DTO.TreeGroupDTO;
 import com.ratz.bonsaicorner.service.impl.TreeGroupServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -22,6 +23,7 @@ public class TreeGroupController {
   }
 
   @PostMapping(produces = {APPLICATION_JSON, APPLICATION_XML}, consumes = {APPLICATION_JSON, APPLICATION_XML})
+  @PreAuthorize("hasAuthority('MANAGER')")
   public ResponseEntity<TreeGroupDTO> saveTreeGroup(@RequestBody TreeGroupDTO treeGroupDTO) {
 
     return new ResponseEntity<>(treeGroupService.saveTreeGroup(treeGroupDTO), HttpStatus.CREATED);
