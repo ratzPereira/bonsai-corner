@@ -38,4 +38,6 @@ public class SpeciesController {
 
     return ResponseEntity.noContent().build();
   }
+
+  //TODO: Get all endpoint with pagination
 }

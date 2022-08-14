@@ -23,5 +23,10 @@ flyway:
   user: root
   password: root
 
+security:
+  jwt:
+    token:
+      secret-key: secretkey
+      expire-length: 3600000
 cors:
   originPatterns: http://localhost:8888, http://localhost:8080

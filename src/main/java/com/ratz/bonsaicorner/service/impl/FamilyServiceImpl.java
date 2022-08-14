@@ -9,19 +9,22 @@ import com.ratz.bonsaicorner.mapper.DozerMapper;
 import com.ratz.bonsaicorner.model.Family;
 import com.ratz.bonsaicorner.repository.FamilyRepository;
 import com.ratz.bonsaicorner.service.FamilyService;
+import lombok.AllArgsConstructor;
+import org.modelmapper.ModelMapper;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
 @Service
+@AllArgsConstructor
 public class FamilyServiceImpl implements FamilyService {
 
+  private ModelMapper modelMapper;
   private FamilyRepository familyRepository;
 
-  public FamilyServiceImpl(FamilyRepository familyRepository) {
-    this.familyRepository = familyRepository;
-  }
 
   @Override
   public FamilyDTO saveFamily(FamilyDTO familyDTO) {
@@ -50,5 +53,33 @@ public class FamilyServiceImpl implements FamilyService {
     familyDTO.add(linkTo(methodOn(FamilyController.class).getFamilyById(id)).withSelfRel());
 
     return familyDTO;
+  }
+
+
+  @Override
+  public List<FamilyDTO> findAllFamilies() {
+
+    List<Family> families = familyRepository.findAll();
+
+    if (families.isEmpty())
+      throw new ResourceNotFoundException("Families not found");
+
+    List<FamilyDTO> familyDTOS = families.stream().map(this::familyToDTO).toList();
+
+    for (FamilyDTO familyDTO : familyDTOS) {
+      familyDTO.add(linkTo(methodOn(FamilyController.class).getFamilyById(familyDTO.getId())).withSelfRel());
+    }
+
+    return familyDTOS;
+  }
+
+  private Family familyDTOToEntity(FamilyDTO treeGroupDTO) {
+
+    return modelMapper.map(treeGroupDTO, Family.class);
+  }
+
+  private FamilyDTO familyToDTO(Family treeGroup) {
+
+    return modelMapper.map(treeGroup, FamilyDTO.class);
   }
 }

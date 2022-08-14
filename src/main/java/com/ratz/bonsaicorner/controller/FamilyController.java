@@ -1,10 +1,13 @@
 package com.ratz.bonsaicorner.controller;
 
 import com.ratz.bonsaicorner.DTO.FamilyDTO;
+import com.ratz.bonsaicorner.DTO.TreeGroupDTO;
 import com.ratz.bonsaicorner.service.impl.FamilyServiceImpl;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
@@ -29,5 +32,11 @@ public class FamilyController {
   public ResponseEntity<FamilyDTO> getFamilyById(@PathVariable Long id) {
 
     return ResponseEntity.ok(familyService.findFamilyById(id));
+  }
+
+  @GetMapping(produces = {APPLICATION_JSON, APPLICATION_XML})
+  public List<FamilyDTO> getAllFamilies() {
+
+    return familyService.findAllFamilies();
   }
 }

@@ -6,6 +6,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
 
@@ -30,4 +32,11 @@ public class TreeGroupController {
 
     return ResponseEntity.ok(treeGroupService.findTreeGroupById(id));
   }
+
+  @GetMapping(produces = {APPLICATION_JSON, APPLICATION_XML})
+  public List<TreeGroupDTO> getAllTreeGroups() {
+
+    return treeGroupService.findAllTreeGroups();
+  }
+
 }
