@@ -51,7 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
         .authorizeRequests().antMatchers("/auth/signIn", "/auth/refresh", "/api-docs/**", "/swagger-ui.html**").permitAll()
-        .antMatchers("/api/**").authenticated()
+        .antMatchers("/api/v1/**").authenticated()
         .antMatchers("/users").denyAll()
         .and()
         .cors()
