@@ -41,7 +41,7 @@ public class AuthServiceImpl implements AuthService {
       authenticationManager.authenticate(
           new UsernamePasswordAuthenticationToken(username, password));
 
-      User user = userRepository.findByUsername(username);
+      User user = userRepository.findByUsername(username).get();
 
 
       TokenDTO tokenResponse;
@@ -65,7 +65,7 @@ public class AuthServiceImpl implements AuthService {
   @SuppressWarnings("rawtypes")
   public ResponseEntity refreshToken(String username, String refreshToken) {
 
-    User user = userRepository.findByUsername(username);
+    User user = userRepository.findByUsername(username).get();
 
     TokenDTO tokenResponse;
 

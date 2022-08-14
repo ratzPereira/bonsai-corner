@@ -6,6 +6,7 @@ import com.ratz.bonsaicorner.exceptions.RequiredObjectIsNullException;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.model.Bonsai;
 import com.ratz.bonsaicorner.model.Species;
+import com.ratz.bonsaicorner.model.User;
 import com.ratz.bonsaicorner.repository.BonsaiRepository;
 import com.ratz.bonsaicorner.repository.SpeciesRepository;
 import com.ratz.bonsaicorner.service.BonsaiService;
@@ -30,6 +31,7 @@ public class BonsaiServiceImpl implements BonsaiService {
   private SpeciesRepository speciesRepository;
   private ModelMapper modelMapper;
   PagedResourcesAssembler<BonsaiDTO> assembler;
+  private UserServiceImpl userService;
 
 
   @Override
@@ -55,6 +57,8 @@ public class BonsaiServiceImpl implements BonsaiService {
   @Override
   public BonsaiDTO createBonsai(BonsaiDTO bonsaiDTO) {
 
+    User user = userService.findByUsername(userService.getCurrentUsernameFromContext());
+
     if (bonsaiDTO == null) throw new RequiredObjectIsNullException();
 
     Species species = speciesRepository.findBySpeciesName(bonsaiDTO.getSpecies().getSpeciesName());
@@ -63,6 +67,7 @@ public class BonsaiServiceImpl implements BonsaiService {
 
     Bonsai bonsai = mapBonsaiToBonsaiDTO(bonsaiDTO);
     bonsai.setSpecies(species);
+    bonsai.setUser(user);
     bonsaiRepository.save(bonsai);
 
     BonsaiDTO bonsaiDTOToReturn = mapBonsaiDTOToBonsai(bonsai);
