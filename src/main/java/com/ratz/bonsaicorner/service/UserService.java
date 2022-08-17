@@ -10,4 +10,8 @@ public interface UserService {
   User findByUsername(String username);
 
   Boolean isTheResourceOwner(Long bonsaiUserId);
+
+  boolean checkIfValidOldPassword(User user, String oldPassword);
+
+  void changeUserPassword(User user, String newPassword);
 }

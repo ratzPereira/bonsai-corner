@@ -21,4 +21,6 @@ public class ProfileController {
 
     return new ResponseEntity<>(profileService.getUserProfile(), HttpStatus.OK);
   }
+
+  //TODO: Create profile, edit user profile, add profile image
 }

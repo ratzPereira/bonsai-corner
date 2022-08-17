@@ -1,20 +1,24 @@
 package com.ratz.bonsaicorner.service.impl;
 
+import com.ratz.bonsaicorner.DTO.PasswordChangeDTO;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
 import com.ratz.bonsaicorner.DTO.security.TokenDTO;
 import com.ratz.bonsaicorner.email.EmailSenderService;
 import com.ratz.bonsaicorner.exceptions.ResourceAlreadyExistException;
+import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.model.User;
 import com.ratz.bonsaicorner.repository.PermissionRepository;
 import com.ratz.bonsaicorner.repository.UserRepository;
 import com.ratz.bonsaicorner.security.JwtTokenProvider;
 import com.ratz.bonsaicorner.service.AuthService;
+import com.ratz.bonsaicorner.service.UserService;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -31,6 +35,7 @@ public class AuthServiceImpl implements AuthService {
   private PasswordEncoder passwordEncoder;
   private PermissionRepository permissionRepository;
   private EmailSenderService emailSenderService;
+  private UserService userService;
 
   @Override
   @SuppressWarnings("rawtypes")
@@ -115,5 +120,22 @@ public class AuthServiceImpl implements AuthService {
 
     String subject = "Welcome to MyBonsaiCorner";
     emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
+  }
+
+  @Override
+  public void changeUserPassword(PasswordChangeDTO passwordChangeDTO) {
+
+    User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
+
+    if (!user.getEmail().equals(passwordChangeDTO.getEmail()))
+      throw new ResourceNotFoundException("Wrong email or password.");
+
+    if (!userService.checkIfValidOldPassword(user, passwordChangeDTO.getOldPassword())) {
+
+      throw new ResourceAlreadyExistException("The old password is wrong for the user " + user.getUsername());
+    }
+
+    userService.changeUserPassword(user, passwordChangeDTO.getNewPassword());
+
   }
 }
