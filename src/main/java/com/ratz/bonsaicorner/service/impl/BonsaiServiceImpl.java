@@ -73,15 +73,22 @@ public class BonsaiServiceImpl implements BonsaiService {
 
     if (species == null) throw new ResourceNotFoundException("Species not found!");
 
-    Bonsai bonsai = mapBonsaiToBonsaiDTO(bonsaiDTO);
-    bonsai.setSpecies(species);
-    bonsai.setUser(user);
-    bonsaiRepository.save(bonsai);
+    try {
+      Set<String> links = fileService.uploadBonsaiImages(bonsaiDTO.getImages());
+      Bonsai bonsai = mapBonsaiToBonsaiDTO(bonsaiDTO);
+      bonsai.setSpecies(species);
+      bonsai.setUser(user);
+      bonsai.setImages(links);
+      bonsaiRepository.save(bonsai);
 
-    BonsaiDTO bonsaiDTOToReturn = mapBonsaiDTOToBonsai(bonsai);
-    bonsaiDTOToReturn.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsaiDTOToReturn.getId())).withSelfRel());
+      BonsaiDTO bonsaiDTOToReturn = mapBonsaiDTOToBonsai(bonsai);
+      bonsaiDTOToReturn.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsaiDTOToReturn.getId())).withSelfRel());
 
-    return bonsaiDTOToReturn;
+      return bonsaiDTOToReturn;
+    } catch (Exception e) {
+
+      throw new IllegalArgumentException("Bonsai cant be saved.");
+    }
   }
 
   @Override
