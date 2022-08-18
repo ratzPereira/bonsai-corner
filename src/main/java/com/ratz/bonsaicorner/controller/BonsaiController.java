@@ -57,6 +57,11 @@ public class BonsaiController {
     return new ResponseEntity<>("Bonsai with the id " + id + " has been deleted", HttpStatus.OK);
   }
 
+  @PutMapping
+  public ResponseEntity<BonsaiDTO> updateBonsai(@RequestBody BonsaiDTO bonsaiDTO) {
 
-  //TODO: Delete bonsai, update bonsai, get all bonsai images, delete image by id, delete all bonsai images, add images to bonsai
+    return ResponseEntity.ok(bonsaiService.updateBonsai(bonsaiDTO));
+  }
+
+  //TODO: update bonsai, get all bonsai images, delete image by id, delete all bonsai images, add images to bonsai
 }

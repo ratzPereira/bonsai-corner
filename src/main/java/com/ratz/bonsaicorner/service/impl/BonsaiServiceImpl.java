@@ -20,6 +20,8 @@ import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
+import java.util.Objects;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 
@@ -84,6 +86,33 @@ public class BonsaiServiceImpl implements BonsaiService {
     Bonsai bonsai = getBonsai(id);
 
     bonsaiRepository.delete(bonsai);
+  }
+
+  @Override
+  public BonsaiDTO updateBonsai(BonsaiDTO bonsaiDTO) {
+
+    Bonsai bonsai = getBonsai(bonsaiDTO.getId());
+
+    if (!Objects.equals(bonsai.getSpecies().getSpeciesName(), bonsaiDTO.getSpecies().getSpeciesName())) {
+
+      Species species = speciesRepository.findBySpeciesName(bonsaiDTO.getSpecies().getSpeciesName());
+      if (species == null) {
+
+        throw new ResourceNotFoundException("Species with the name " + bonsaiDTO.getSpecies().getSpeciesName() + " does not exist.");
+      }
+      bonsai.setSpecies(species);
+    }
+
+    bonsai.setAge(bonsaiDTO.getAge());
+    bonsai.setDescription(bonsaiDTO.getDescription());
+    bonsai.setName(bonsaiDTO.getName());
+    //bonsai.setImages(bonsaiDTO.getImages());
+
+    bonsaiRepository.save(bonsai);
+    BonsaiDTO bonsaiDTOToReturn = mapBonsaiDTOToBonsai(bonsai);
+    bonsaiDTOToReturn.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsai.getId())).withSelfRel());
+
+    return bonsaiDTOToReturn;
   }
 
 
