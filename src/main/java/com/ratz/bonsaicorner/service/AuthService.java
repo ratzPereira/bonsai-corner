@@ -1,5 +1,6 @@
 package com.ratz.bonsaicorner.service;
 
+import com.ratz.bonsaicorner.DTO.ForgotPasswordDTO;
 import com.ratz.bonsaicorner.DTO.PasswordChangeDTO;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
@@ -15,4 +16,6 @@ public interface AuthService {
   void registerUser(SignUpDTO signUpDTO);
 
   void changeUserPassword(PasswordChangeDTO passwordChangeDTO);
+
+  void userForgotPassword(ForgotPasswordDTO forgotPasswordDTO);
 }

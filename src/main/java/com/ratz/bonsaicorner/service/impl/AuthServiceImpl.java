@@ -1,5 +1,6 @@
 package com.ratz.bonsaicorner.service.impl;
 
+import com.ratz.bonsaicorner.DTO.ForgotPasswordDTO;
 import com.ratz.bonsaicorner.DTO.PasswordChangeDTO;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
@@ -13,6 +14,7 @@ import com.ratz.bonsaicorner.repository.UserRepository;
 import com.ratz.bonsaicorner.security.JwtTokenProvider;
 import com.ratz.bonsaicorner.service.AuthService;
 import com.ratz.bonsaicorner.service.UserService;
+import com.ratz.bonsaicorner.utils.PasswordGenerator;
 import lombok.AllArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -36,6 +38,7 @@ public class AuthServiceImpl implements AuthService {
   private PermissionRepository permissionRepository;
   private EmailSenderService emailSenderService;
   private UserService userService;
+  private PasswordGenerator passwordGenerator;
 
   @Override
   @SuppressWarnings("rawtypes")
@@ -137,5 +140,24 @@ public class AuthServiceImpl implements AuthService {
 
     userService.changeUserPassword(user, passwordChangeDTO.getNewPassword());
 
+  }
+
+  @Override
+  public void userForgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
+
+    User user = userRepository.findByEmail(forgotPasswordDTO.getEmail())
+        .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+
+
+    String newPasswordForTheUser = passwordGenerator.nextPassword();
+    user.setPassword(passwordEncoder.encode(newPasswordForTheUser));
+
+    String body = "Hello " + user.getFirstName() + " "
+        + user.getLastName() + " " + " your new password for MyBonsaiCorner is : " + newPasswordForTheUser + " Dont forget to change it later.";
+    String subject = "New password for MyBonsaiCorner.";
+
+
+    userRepository.save(user);
+    emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
   }
 }
