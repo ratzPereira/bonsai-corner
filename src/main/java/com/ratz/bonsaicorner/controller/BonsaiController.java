@@ -49,5 +49,14 @@ public class BonsaiController {
     return ResponseEntity.ok(bonsaiService.findBonsaiById(id));
   }
 
+  @DeleteMapping("/{id}")
+  public ResponseEntity<String> deleteBonsaiById(@PathVariable Long id) {
+
+    bonsaiService.deleteBonsaiById(id);
+
+    return new ResponseEntity<>("Bonsai with the id " + id + " has been deleted", HttpStatus.OK);
+  }
+
+
   //TODO: Delete bonsai, update bonsai, get all bonsai images, delete image by id, delete all bonsai images, add images to bonsai
 }

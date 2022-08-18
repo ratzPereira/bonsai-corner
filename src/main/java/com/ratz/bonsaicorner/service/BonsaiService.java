@@ -12,4 +12,6 @@ public interface BonsaiService {
   BonsaiDTO findBonsaiById(Long id);
 
   BonsaiDTO createBonsai(BonsaiDTO bonsaiDTO);
+
+  void deleteBonsaiById(Long id);
 }

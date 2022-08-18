@@ -77,6 +77,15 @@ public class BonsaiServiceImpl implements BonsaiService {
     return bonsaiDTOToReturn;
   }
 
+  @Override
+  public void deleteBonsaiById(Long id) {
+
+    //TODO: delete images when deleting bonsai
+    Bonsai bonsai = getBonsai(id);
+
+    bonsaiRepository.delete(bonsai);
+  }
+
 
   //helper methods
   private PagedModel<EntityModel<BonsaiDTO>> getDTOFromEntity(Pageable pageable, Page<Bonsai> bonsais) {
@@ -94,11 +103,11 @@ public class BonsaiServiceImpl implements BonsaiService {
 
   private Bonsai getBonsai(Long id) {
     Bonsai bonsai = bonsaiRepository.findById(id).orElseThrow(
-        () -> new ResourceNotFoundException("Bonsai with the id " + id + "not found!"));
+        () -> new ResourceNotFoundException("Bonsai with the id " + id + " not found!"));
 
     if (!userService.isTheResourceOwner(bonsai.getUser().getId())) {
 
-      throw new ResourceNotFoundException("Bonsai with the id " + id + "not found!");
+      throw new ResourceNotFoundException("Bonsai with the id " + id + " not found!");
     }
 
     return bonsai;

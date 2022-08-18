@@ -67,7 +67,6 @@ public class AuthController {
     return token;
   }
 
-  //TODO:  change password.
   @PostMapping("/password")
   public ResponseEntity<String> changeUserPassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
 
