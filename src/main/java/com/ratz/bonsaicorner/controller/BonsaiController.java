@@ -1,6 +1,8 @@
 package com.ratz.bonsaicorner.controller;
 
 import com.ratz.bonsaicorner.DTO.BonsaiDTO;
+import com.ratz.bonsaicorner.DTO.ImageLinkDTO;
+import com.ratz.bonsaicorner.DTO.ImagesSetDTO;
 import com.ratz.bonsaicorner.service.impl.BonsaiServiceImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -10,6 +12,8 @@ import org.springframework.hateoas.PagedModel;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_JSON;
 import static com.ratz.bonsaicorner.utils.MediaTypeUtils.APPLICATION_XML;
@@ -63,5 +67,30 @@ public class BonsaiController {
     return ResponseEntity.ok(bonsaiService.updateBonsai(bonsaiDTO));
   }
 
-  //TODO: update bonsai, get all bonsai images, delete image by id, delete all bonsai images, add images to bonsai
+  @GetMapping("/{id}/images")
+  public ImagesSetDTO getAllBonsaiImages(@PathVariable Long id) {
+
+    return bonsaiService.getAllBonsaiImages(id);
+  }
+
+  @DeleteMapping("/{id}/image")
+  public ResponseEntity<String> deleteBonsaiImage(@PathVariable Long id, @RequestBody ImageLinkDTO link) {
+
+    bonsaiService.deleteImageOfTheBonsai(id, link);
+
+    return new ResponseEntity<>("Image has been deleted", HttpStatus.OK);
+  }
+
+  @DeleteMapping("/{id}/images")
+  public ResponseEntity<String> deleteBonsaiImages(@PathVariable Long id) {
+
+    bonsaiService.deleteAllBonsaiImages(id);
+
+    return new ResponseEntity<>("All bonsai images deleted", HttpStatus.OK);
+  }
+
+  @PostMapping("/{id}/images")
+  public ResponseEntity<List<String>> addImagesToBonsai(@PathVariable Long id, @RequestBody ImagesSetDTO images) {
+    return new ResponseEntity(bonsaiService.addImagesToBonsai(id, images), HttpStatus.CREATED);
+  }
 }

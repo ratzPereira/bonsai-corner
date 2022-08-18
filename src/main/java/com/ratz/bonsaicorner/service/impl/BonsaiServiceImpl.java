@@ -1,7 +1,10 @@
 package com.ratz.bonsaicorner.service.impl;
 
 import com.ratz.bonsaicorner.DTO.BonsaiDTO;
+import com.ratz.bonsaicorner.DTO.ImageLinkDTO;
+import com.ratz.bonsaicorner.DTO.ImagesSetDTO;
 import com.ratz.bonsaicorner.controller.BonsaiController;
+import com.ratz.bonsaicorner.exceptions.ImageUploadFailedException;
 import com.ratz.bonsaicorner.exceptions.RequiredObjectIsNullException;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
 import com.ratz.bonsaicorner.model.Bonsai;
@@ -19,8 +22,9 @@ import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.Link;
 import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Objects;
+import java.util.*;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
@@ -34,6 +38,7 @@ public class BonsaiServiceImpl implements BonsaiService {
   private ModelMapper modelMapper;
   PagedResourcesAssembler<BonsaiDTO> assembler;
   private UserServiceImpl userService;
+  private FileServiceImpl fileService;
 
 
   @Override
@@ -140,6 +145,83 @@ public class BonsaiServiceImpl implements BonsaiService {
     }
 
     return bonsai;
+  }
+
+  @Override
+  public ImagesSetDTO getAllBonsaiImages(Long id) {
+
+    Bonsai bonsai = getBonsai(id);
+//TODO hateoas
+    ImagesSetDTO imagesSetDTO = new ImagesSetDTO();
+    imagesSetDTO.setImages(bonsai.getImages());
+
+    return imagesSetDTO;
+  }
+
+  @Override
+  public void deleteImageOfTheBonsai(Long id, ImageLinkDTO link) {
+
+    Bonsai bonsai = getBonsai(id);
+
+    Set<String> links = bonsai.getImages();
+
+    if (links.contains(link.getUrl())) {
+
+      try {
+        links.remove(link.getUrl());
+        bonsaiRepository.save(bonsai);
+        fileService.deleteImage(link.getUrl());
+
+      } catch (Exception ex) {
+        throw new ImageUploadFailedException("Failed to delete image! Please try again later.");
+      }
+
+    } else {
+
+      throw new ResourceNotFoundException("Image with the url " + link.getUrl() + " does not exist!");
+    }
+  }
+
+
+  @Override
+  public void deleteAllBonsaiImages(Long id) {
+
+    Bonsai bonsai = getBonsai(id);
+
+    if (bonsai.getImages().isEmpty())
+      throw new ResourceNotFoundException("Bonsai images not found!");
+
+    try {
+
+      fileService.deleteMultipleImages(bonsai.getImages());
+      bonsai.setImages(new HashSet<>());
+      bonsaiRepository.save(bonsai);
+
+    } catch (Exception ex) {
+      throw new ImageUploadFailedException("Failed to delete images. Please try again later.");
+    }
+  }
+
+  @Override
+  @Transactional
+  public List<String> addImagesToBonsai(Long id, ImagesSetDTO images) {
+
+    Bonsai bonsai = getBonsai(id);
+
+    try {
+
+      Set<String> imagesSaved = fileService.uploadBonsaiImages(images.getImages());
+      Set<String> imagesList = bonsai.getImages();
+      imagesList.addAll(imagesSaved);
+      bonsai.setImages(imagesList);
+      bonsaiRepository.save(bonsai);
+
+      return new ArrayList<>(imagesSaved);
+
+    } catch (Exception e) {
+
+      throw new ImageUploadFailedException("Failed to upload images");
+    }
   }
 
   private Bonsai mapBonsaiToBonsaiDTO(BonsaiDTO bonsaiDTO) {
