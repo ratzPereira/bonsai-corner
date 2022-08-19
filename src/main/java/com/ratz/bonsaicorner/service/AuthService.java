@@ -1,7 +1,7 @@
 package com.ratz.bonsaicorner.service;
 
-import com.ratz.bonsaicorner.DTO.ForgotPasswordDTO;
-import com.ratz.bonsaicorner.DTO.PasswordChangeDTO;
+import com.ratz.bonsaicorner.DTO.security.ForgotPasswordDTO;
+import com.ratz.bonsaicorner.DTO.security.PasswordChangeDTO;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
 import org.springframework.http.ResponseEntity;

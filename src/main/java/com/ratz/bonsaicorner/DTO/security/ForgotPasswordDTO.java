@@ -1,4 +1,4 @@
-package com.ratz.bonsaicorner.DTO;
+package com.ratz.bonsaicorner.DTO.security;
 
 import lombok.Data;
 
