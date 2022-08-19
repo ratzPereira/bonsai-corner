@@ -33,4 +33,7 @@ public class InterventionController {
 
     return new ResponseEntity<>(interventionService.getInterventionById(id), HttpStatus.OK);
   }
+
+  //TODO: get intervention images, delete intervention by id, delete intervention image, delete all intervention images,
+  //TODO: add image to intervention, update intervention
 }

@@ -1,0 +1,12 @@
+{
+  "type": "service_account",
+  "project_id": "mybonsaicorner",
+  "private_key_id": "7b6e5decf1711c408ba0c78e54c78fc74202fb24",
+  "private_key": "-----BEGIN PRIVATE KEY-----\nMIIEvwIBADANBgkqhkiG9w0BAQEFAASCBKkwggSlAgEAAoIBAQDDdwAOH3glB91n\nGV0yP4SQQrqvv3w+e8+EErh8gDVgMyz0LHK3Y6NAOQumbL1vuiUDgNJDMyOiyFYR\nIxT4rRSil6joR+sPBdbW4kVZOERpi2tuiG7nd2rWl8tb3r6onnO6f0R3BmLFlFjL\nHbRmyxo3958SwHLRXWcPv65mtDvGCSm8h4I7UDAnAchFo8sKdtKzhl6eQ4bWS+Ey\nx/OaF12VHI5Dq6lHekROMjEogEeWKQsPNZLvOn/GdAoNhe7vXg7NlXGlwqBRhFhD\nUYVqWAnr9w6Dm+wMC+JfRS72W5E+QALzfoKSVvO/tgJ37PvXIn9cmJUX3TcY5zxA\nvN43/HcLAgMBAAECggEAGM+ep1bxmmBksgUOB5D4zpJXKHQvHQP8mSsCgEnf50L9\nC6N8DkZB/ybJO/SlQ9eGLOspsBOqNtak13kIskYkuTzKA8Nj6sdsIrZHD5ECXL6w\nl4UO8Ceq3UFts/l9Ybb3QVmNQxSBmMsrTYu1jgTC4mQhV4aBLI06xfd9TOvHg0Fc\nC0WrH5wagQ6E7nGSCTznAX8oDy585x5C6P6pYueMNqGPpL9+sPgEUjLi47QW9fP1\nOmiS0uIk4gRFwfC+hRA8ZZPxTkMEPbLigLyHASCZAkFT8NBmbQg2dO3mZUZU0G5U\nfhPi2dczkT+ei0rOiS3glGGMe3x0dP3qFB6XZ9t8/QKBgQDhTrloEOMAzb8TOp9k\n2cSltIVh1VHjA15IgzCP3IlpxyjzwVBcS7/Xubr05Yo6Vbcf+/3Qs/Gv8D4FMJso\n0ctP3uDyX1vgI3BROQdO6Vu+zv2tVqhCx/i7cFj/G4dOgqqXrI8oqvhPRs/xRIcj\n27VkGuBpO1MHzmfMA1IpJbDn3QKBgQDeF45BZLhR+Bemdm/0DpnOTctmEkP7csa3\n4zTnDJPvJvXzA8FRH5vgqqBoXhgCrLGFiBdxySV10wa7bPPeYund8UjkCrTG5bsb\nNBG13Ew5N788uZ9hZXmou1MtDd1+wOxvAOc6qrKyt4HBxue37UH1iSlQga7NR2YV\ngMj/JmygBwKBgQCfNSfil3wxBzIr/lK/yvogNa3C8iBJEApBpyJbpfUb3/XaORH2\nBjjr0XyArOq+Se97FG/IWD9CmbrZo/0gHQ9TwySlYCjl+2TUoD2/zzpbXJz5LbD8\nb54dpUfeDK/SFJdDUlZe4GFSc7FgxZHRDuHgePV2pssHSx0hln8qQE3/qQKBgQDW\nvr4dew9CqvnrSnAb85ZCxjQbISQ82RFOs1Hu6tmMEAcXEJV3JHIrvbBW2kyrIWKR\ndDL/IfinwgGrbsErUkdCBFFvtu5vt6jAuAs75qSJWt7+D5oNqfoF7gOR9+so6dBz\n0NLEhlM9vXSo8vQRg0cY7KRXJN3pvdT2i81N8VBtNwKBgQDLfWEDwMoyz2mWIqX/\np+8t9n91Vd9l/6wpvriX8eUjlpWB6ZdrhLR8uNEweoGMd5wHuJNp/n15YD8RDgAm\nLMVafFOBhMUXlHKOkP2gOB6Tjy30THOC4yXIUmOH5mPDf7vATqDq+HfCflC/XatZ\nYRh8PHejb9OqZoKhrx5I+uo46A==\n-----END PRIVATE KEY-----\n",
+  "client_email": "firebase-adminsdk-x11qy@mybonsaicorner.iam.gserviceaccount.com",
+  "client_id": "107365654219426183222",
+  "auth_uri": "https://accounts.google.com/o/oauth2/auth",
+  "token_uri": "https://oauth2.googleapis.com/token",
+  "auth_provider_x509_cert_url": "https://www.googleapis.com/oauth2/v1/certs",
+  "client_x509_cert_url": "https://www.googleapis.com/robot/v1/metadata/x509/firebase-adminsdk-x11qy%40mybonsaicorner.iam.gserviceaccount.com"
+}

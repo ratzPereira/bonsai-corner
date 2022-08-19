@@ -1,6 +1,8 @@
 package com.ratz.bonsaicorner.controller;
 
 
+import com.ratz.bonsaicorner.DTO.security.ForgotPasswordDTO;
+import com.ratz.bonsaicorner.DTO.security.PasswordChangeDTO;
 import com.ratz.bonsaicorner.DTO.security.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.DTO.security.SignUpDTO;
 import com.ratz.bonsaicorner.service.impl.AuthServiceImpl;
@@ -65,6 +67,19 @@ public class AuthController {
     return token;
   }
 
+  @PostMapping("/password")
+  public ResponseEntity<String> changeUserPassword(@RequestBody PasswordChangeDTO passwordChangeDTO) {
+
+    authService.changeUserPassword(passwordChangeDTO);
+    return ResponseEntity.status(HttpStatus.OK).body("Password changed with success");
+  }
+
+  @PostMapping("/forgot-password")
+  public ResponseEntity<String> userForgotPassword(@RequestBody ForgotPasswordDTO forgotPasswordDTO) {
+
+    authService.userForgotPassword(forgotPasswordDTO);
+    return ResponseEntity.status(HttpStatus.OK).body("New Password sent with success");
+  }
 
   private boolean isDataValid(String username, String refreshToken) {
     return refreshToken == null || refreshToken.isBlank() || username == null || username.isBlank();

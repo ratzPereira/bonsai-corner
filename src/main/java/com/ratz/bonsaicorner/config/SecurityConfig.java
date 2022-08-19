@@ -2,12 +2,13 @@ package com.ratz.bonsaicorner.config;
 
 import com.ratz.bonsaicorner.security.JwtConfigurer;
 import com.ratz.bonsaicorner.security.JwtTokenProvider;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.AllArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
+import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.password.DelegatingPasswordEncoder;
@@ -18,11 +19,12 @@ import java.util.HashMap;
 import java.util.Map;
 
 @Configuration
+@EnableWebSecurity
 @EnableGlobalMethodSecurity(prePostEnabled = true)
+@AllArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 
-  @Autowired
   private JwtTokenProvider jwtTokenProvider;
 
   @Bean
@@ -52,8 +54,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         .csrf().disable()
         .sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS)
         .and()
-        .authorizeRequests().antMatchers("/auth/signIn", "/auth/refresh", "/api-docs/**", "/swagger-ui.html**").permitAll()
+        .authorizeRequests().antMatchers("/auth/signIn", "/auth/refresh", "/api-docs/**", "/swagger-ui.html**", "/auth/forgot-password").permitAll()
         .antMatchers("/api/v1/**").authenticated()
+        .antMatchers("/auth/password*").authenticated()
         .antMatchers("/users").denyAll()
         .and()
         .cors()

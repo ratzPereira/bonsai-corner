@@ -6,12 +6,15 @@ import com.auth0.jwt.algorithms.Algorithm;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.ratz.bonsaicorner.DTO.security.TokenDTO;
 import com.ratz.bonsaicorner.exceptions.InvalidJwtAuthenticationException;
+import com.ratz.bonsaicorner.model.User;
+import com.ratz.bonsaicorner.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -22,7 +25,7 @@ import java.util.Date;
 import java.util.List;
 
 @Service
-public class JwtTokenProvider {
+public class JwtTokenProvider implements UserDetailsService {
 
 
   Algorithm algorithm = null;
@@ -34,7 +37,9 @@ public class JwtTokenProvider {
   private long validityInMilliseconds = 3600000; // 1h
 
   @Autowired
+  private UserRepository userRepository;
   private UserDetailsService userDetailsService;
+
 
   @PostConstruct
   protected void init() {
@@ -98,8 +103,7 @@ public class JwtTokenProvider {
 
     DecodedJWT decodedJWT = decodedToken(token);
 
-    UserDetails userDetails = this.userDetailsService
-        .loadUserByUsername(decodedJWT.getSubject());
+    UserDetails userDetails = loadUserByUsername(decodedJWT.getSubject());
 
     return new UsernamePasswordAuthenticationToken(userDetails, "", userDetails.getAuthorities());
   }
@@ -139,6 +143,20 @@ public class JwtTokenProvider {
     } catch (Exception e) {
 
       throw new InvalidJwtAuthenticationException("Expired or invalid JWT token!");
+    }
+  }
+
+  @Override
+  public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+
+    User user = userRepository.findByUsername(username).get();
+
+    if (user != null) {
+      return user;
+
+    } else {
+
+      throw new UsernameNotFoundException("User not found with the provided id.");
     }
   }
 }
