@@ -12,23 +12,23 @@ import java.time.LocalDate;
 @ToString
 public class Profile {
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  private LocalDate birthDate;
+    private LocalDate birthDate;
 
-  private String country;
+    private String country;
 
-  private String profilePhoto;
+    private String profilePhoto;
 
-  private Integer age;
+    private Integer age;
 
-  private Integer experienceYears;
+    private Integer experienceYears;
 
-  private Integer numberOfTrees;
+    private Integer numberOfTrees;
 
-  @OneToOne()
-  @JoinColumn(name = "user_id", referencedColumnName = "id")
-  private User user;
+    @OneToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "user_id", nullable = false)
+    private User user;
 }
