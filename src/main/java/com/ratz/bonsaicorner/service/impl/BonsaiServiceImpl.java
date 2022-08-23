@@ -94,7 +94,6 @@ public class BonsaiServiceImpl implements BonsaiService {
   @Override
   public void deleteBonsaiById(Long id) {
 
-    //TODO: delete images when deleting bonsai
     Bonsai bonsai = getBonsai(id);
 
     if (bonsai.getImages() != null) {
@@ -161,7 +160,7 @@ public class BonsaiServiceImpl implements BonsaiService {
   public ImagesSetDTO getAllBonsaiImages(Long id) {
 
     Bonsai bonsai = getBonsai(id);
-//TODO hateoas
+
     ImagesSetDTO imagesSetDTO = new ImagesSetDTO();
     imagesSetDTO.setImages(bonsai.getImages());
 
