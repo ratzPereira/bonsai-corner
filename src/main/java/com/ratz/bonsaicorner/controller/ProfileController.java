@@ -51,6 +51,4 @@ public class ProfileController {
         profileService.deleteProfile();
         return "Profile deleted!";
     }
-
-    //TODO Delete profile
 }
