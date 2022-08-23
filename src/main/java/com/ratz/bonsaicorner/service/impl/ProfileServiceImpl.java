@@ -83,7 +83,7 @@ public class ProfileServiceImpl implements ProfileService {
 
         User user = userService.findByUsername(userService.getCurrentUsernameFromContext());
         Profile profile = profileRepository.findByUserId(user.getId());
-        
+
         try {
             if (profile.getProfilePhoto() != null) {
                 fileService.deleteImage(profile.getProfilePhoto());
