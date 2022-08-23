@@ -94,9 +94,11 @@ public class BonsaiServiceImpl implements BonsaiService {
   @Override
   public void deleteBonsaiById(Long id) {
 
-    //TODO: delete images when deleting bonsai
     Bonsai bonsai = getBonsai(id);
 
+    if (bonsai.getImages() != null) {
+      fileService.deleteMultipleImages(bonsai.getImages());
+    }
     bonsaiRepository.delete(bonsai);
   }
 
@@ -134,17 +136,17 @@ public class BonsaiServiceImpl implements BonsaiService {
     Page<BonsaiDTO> bonsaiDTOS = bonsais.map(bonsai -> mapBonsaiDTOToBonsai(bonsai));
 
     bonsaiDTOS.map(bonsaiDTO
-        -> bonsaiDTO.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsaiDTO.getId())).withSelfRel()));
+            -> bonsaiDTO.add(linkTo(methodOn(BonsaiController.class).findBonsaiById(bonsaiDTO.getId())).withSelfRel()));
 
     Link link = linkTo(methodOn(BonsaiController.class)
-        .findAllBonsai(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+            .findAllBonsai(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
 
     return assembler.toModel(bonsaiDTOS, link);
   }
 
   private Bonsai getBonsai(Long id) {
     Bonsai bonsai = bonsaiRepository.findById(id).orElseThrow(
-        () -> new ResourceNotFoundException("Bonsai with the id " + id + " not found!"));
+            () -> new ResourceNotFoundException("Bonsai with the id " + id + " not found!"));
 
     if (!userService.isTheResourceOwner(bonsai.getUser().getId())) {
 
@@ -158,7 +160,7 @@ public class BonsaiServiceImpl implements BonsaiService {
   public ImagesSetDTO getAllBonsaiImages(Long id) {
 
     Bonsai bonsai = getBonsai(id);
-//TODO hateoas
+
     ImagesSetDTO imagesSetDTO = new ImagesSetDTO();
     imagesSetDTO.setImages(bonsai.getImages());
 

@@ -2,6 +2,7 @@ package com.ratz.bonsaicorner.service.impl;
 
 
 import com.ratz.bonsaicorner.DTO.SpeciesDTO;
+import com.ratz.bonsaicorner.controller.BonsaiController;
 import com.ratz.bonsaicorner.controller.SpeciesController;
 import com.ratz.bonsaicorner.exceptions.ResourceAlreadyExistException;
 import com.ratz.bonsaicorner.exceptions.ResourceNotFoundException;
@@ -14,6 +15,12 @@ import com.ratz.bonsaicorner.repository.TreeGroupRepository;
 import com.ratz.bonsaicorner.service.SpeciesService;
 import lombok.AllArgsConstructor;
 import org.modelmapper.ModelMapper;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PagedResourcesAssembler;
+import org.springframework.hateoas.EntityModel;
+import org.springframework.hateoas.Link;
+import org.springframework.hateoas.PagedModel;
 import org.springframework.stereotype.Service;
 
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
@@ -28,12 +35,14 @@ public class SpeciesServiceImpl implements SpeciesService {
   private TreeGroupRepository treeGroupRepository;
   private ModelMapper mapper;
 
+  PagedResourcesAssembler<SpeciesDTO> assembler;
+
 
   @Override
   public SpeciesDTO getSpeciesById(Long id) {
 
     Species species = speciesRepository.findById(id)
-        .orElseThrow(() -> new ResourceNotFoundException("Species with the ID " + id + " not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Species with the ID " + id + " not found"));
 
     SpeciesDTO speciesDTO = speciesEntityToDto(species);
     speciesDTO.add(linkTo(methodOn(SpeciesController.class).getSpeciesById(id)).withSelfRel());
@@ -71,9 +80,30 @@ public class SpeciesServiceImpl implements SpeciesService {
   public void deleteSpecies(Long id) {
 
     Species species = speciesRepository.findById(id).orElseThrow(
-        () -> new ResourceNotFoundException("Species with ID " + id + " not found"));
+            () -> new ResourceNotFoundException("Species with ID " + id + " not found"));
 
     speciesRepository.delete(species);
+  }
+
+  @Override
+  public PagedModel<EntityModel<SpeciesDTO>> findAll(Pageable pageable) {
+
+    Page<Species> species = speciesRepository.findAll(pageable);
+
+    return getDTOFromEntity(pageable, species);
+  }
+
+  private PagedModel<EntityModel<SpeciesDTO>> getDTOFromEntity(Pageable pageable, Page<Species> species) {
+
+    Page<SpeciesDTO> speciesDTOS = species.map(this::speciesEntityToDto);
+
+    speciesDTOS.map(speciesDTO
+            -> speciesDTO.add(linkTo(methodOn(SpeciesController.class).getSpeciesById(speciesDTO.getId())).withSelfRel()));
+
+    Link link = linkTo(methodOn(BonsaiController.class)
+            .findAllBonsai(pageable.getPageNumber(), pageable.getPageSize(), "asc")).withSelfRel();
+
+    return assembler.toModel(speciesDTOS, link);
   }
 
   private Species speciesDtoToEntity(SpeciesDTO speciesDTO) {

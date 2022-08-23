@@ -4,11 +4,13 @@ import com.ratz.bonsaicorner.DTO.ProfileDTO;
 import com.ratz.bonsaicorner.DTO.ProfileResponseDTO;
 
 public interface ProfileService {
-  ProfileResponseDTO getUserProfile();
+    ProfileResponseDTO getUserProfile();
 
-  ProfileResponseDTO createProfile(ProfileDTO profileDTO);
+    ProfileResponseDTO createProfile(ProfileDTO profileDTO);
 
-  ProfileResponseDTO editProfile(ProfileDTO profileDTO);
+    ProfileResponseDTO editProfile(ProfileDTO profileDTO);
 
-  String saveOrEditProfileImage(String image);
+    String saveOrEditProfileImage(String image);
+
+    void deleteProfile();
 }

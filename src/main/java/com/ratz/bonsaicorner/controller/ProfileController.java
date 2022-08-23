@@ -17,33 +17,38 @@ import javax.validation.Valid;
 @AllArgsConstructor
 public class ProfileController {
 
-  private ProfileServiceImpl profileService;
+    private ProfileServiceImpl profileService;
 
-  @GetMapping()
-  public ResponseEntity<ProfileResponseDTO> getUserProfile() {
+    @GetMapping()
+    public ResponseEntity<ProfileResponseDTO> getUserProfile() {
 
-    return new ResponseEntity<>(profileService.getUserProfile(), HttpStatus.OK);
-  }
+        return new ResponseEntity<>(profileService.getUserProfile(), HttpStatus.OK);
+    }
 
-  @PostMapping()
-  public ResponseEntity<ProfileResponseDTO> createProfile(@Valid @RequestBody ProfileDTO profileDTO) {
+    @PostMapping()
+    public ResponseEntity<ProfileResponseDTO> createProfile(@Valid @RequestBody ProfileDTO profileDTO) {
 
-    return new ResponseEntity<>(profileService.createProfile(profileDTO), HttpStatus.CREATED);
-  }
+        return new ResponseEntity<>(profileService.createProfile(profileDTO), HttpStatus.CREATED);
+    }
 
-  @PutMapping()
-  public ResponseEntity<ProfileResponseDTO> editProfile(@Valid @RequestBody ProfileDTO profileDTO) {
+    @PutMapping()
+    public ResponseEntity<ProfileResponseDTO> editProfile(@Valid @RequestBody ProfileDTO profileDTO) {
 
-    return new ResponseEntity<>(profileService.editProfile(profileDTO), HttpStatus.CREATED);
-  }
+        return new ResponseEntity<>(profileService.editProfile(profileDTO), HttpStatus.CREATED);
+    }
 
-  @PostMapping("/image")
-  public ResponseEntity uploadProfilePhoto(@Valid @RequestBody ProfileImageDTO image) {
+    @PostMapping("/image")
+    public ResponseEntity<UploadOutputDTO> uploadProfilePhoto(@Valid @RequestBody ProfileImageDTO image) {
 
-    String url = profileService.saveOrEditProfileImage(image.getImage());
+        String url = profileService.saveOrEditProfileImage(image.getImage());
 
-    return new ResponseEntity(new UploadOutputDTO(url), HttpStatus.CREATED);
-  }
+        return new ResponseEntity<>(new UploadOutputDTO(url), HttpStatus.CREATED);
+    }
 
-  //TODO Delete profile
+    @DeleteMapping
+    public String deleteProfile() {
+
+        profileService.deleteProfile();
+        return "Profile deleted!";
+    }
 }
