@@ -13,8 +13,8 @@ import com.ratz.bonsaicorner.service.FileService;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.PostConstruct;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.HashSet;
@@ -28,106 +28,107 @@ import static com.ratz.bonsaicorner.utils.APIConstants.MIME_TYPE;
 public class FileServiceImpl implements FileService {
 
 
-  @PostConstruct
-  private void init() throws IOException {
+    @PostConstruct
+    private void init() throws IOException {
 
-    FileInputStream serviceAccount =
-        new FileInputStream("src/main/resources/mybonsaicorner-firebase.json");
+        ClassLoader classLoader = getClass().getClassLoader();
+        InputStream inputStream = classLoader.getResourceAsStream("mybonsaicorner-firebase.json");
 
-    FirebaseOptions options = new FirebaseOptions.Builder()
-        .setCredentials(GoogleCredentials.fromStream(serviceAccount))
-        .setStorageBucket("mybonsaicorner.appspot.com")
-        .build();
+        assert inputStream != null;
+        FirebaseOptions options = new FirebaseOptions.Builder()
+                .setCredentials(GoogleCredentials.fromStream(inputStream))
+                .setStorageBucket("mybonsaicorner.appspot.com")
+                .build();
 
-    FirebaseApp.initializeApp(options);
-  }
-
-  @Override
-  public String uploadSingleImage(String image) {
-
-    Bucket bucket = StorageClient.getInstance().bucket();
-
-    String fileName = UUID.randomUUID().toString();
-
-    checkIfItsValidAndUpload(bucket, image, fileName);
-
-    return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName);
-  }
-
-  @Override
-  public Set<String> uploadBonsaiImages(Set<String> images) {
-
-    Bucket bucket = StorageClient.getInstance().bucket();
-
-    Set<String> links = new HashSet();
-
-    for (String image : images) {
-
-      String fileName = UUID.randomUUID().toString();
-
-      checkIfItsValidAndUpload(bucket, image, fileName);
-
-      links.add(String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName));
+        FirebaseApp.initializeApp(options);
     }
 
-    return links;
-  }
+    @Override
+    public String uploadSingleImage(String image) {
 
-  @Override
-  public void deleteImage(String url) {
+        Bucket bucket = StorageClient.getInstance().bucket();
 
-    Bucket bucket = StorageClient.getInstance().bucket();
+        String fileName = UUID.randomUUID().toString();
 
-    deleteImage(bucket, url);
+        checkIfItsValidAndUpload(bucket, image, fileName);
 
-  }
-
-  @Override
-  public void deleteMultipleImages(Set<String> images) {
-
-    Bucket bucket = StorageClient.getInstance().bucket();
-
-    for (String image : images) {
-      deleteImage(bucket, image);
+        return String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName);
     }
-  }
 
-  //helper methods
-  private void checkIfItsValidAndUpload(Bucket bucket, String image, String fileName) {
+    @Override
+    public Set<String> uploadBonsaiImages(Set<String> images) {
 
-    if (!checkIfItsBase64(image.getBytes(StandardCharsets.UTF_8)))
-      throw new ImageUploadFailedException("The image is not in Base64");
+        Bucket bucket = StorageClient.getInstance().bucket();
 
-    byte[] bytes = Base64.getDecoder().decode(image);
+        Set<String> links = new HashSet();
 
-    Blob blob = bucket.create(fileName, bytes, MIME_TYPE);
-    blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
-  }
+        for (String image : images) {
 
+            String fileName = UUID.randomUUID().toString();
 
-  private boolean checkIfItsBase64(byte[] bytes) {
+            checkIfItsValidAndUpload(bucket, image, fileName);
 
-    return org.apache.commons.codec.binary.Base64.isBase64(bytes);
-  }
+            links.add(String.format("https://storage.googleapis.com/%s/%s", bucket.getName(), fileName));
+        }
 
-
-  private void deleteImage(Bucket bucket, String image) {
-
-    StringBuilder uuid = new StringBuilder(image.replace(BUCKET_URL, ""));
-
-    Blob fileExists = bucket.get(uuid.toString());
-
-    if (fileExists.exists()) {
-
-      try {
-
-        fileExists.delete();
-
-      } catch (Exception ex) {
-        throw new ImageUploadFailedException("Image uploading failed! Please try again later.");
-      }
-    } else {
-      throw new ResourceNotFoundException("File with the UUID " + uuid + " not found.");
+        return links;
     }
-  }
+
+    @Override
+    public void deleteImage(String url) {
+
+        Bucket bucket = StorageClient.getInstance().bucket();
+
+        deleteImage(bucket, url);
+
+    }
+
+    @Override
+    public void deleteMultipleImages(Set<String> images) {
+
+        Bucket bucket = StorageClient.getInstance().bucket();
+
+        for (String image : images) {
+            deleteImage(bucket, image);
+        }
+    }
+
+    //helper methods
+    private void checkIfItsValidAndUpload(Bucket bucket, String image, String fileName) {
+
+        if (!checkIfItsBase64(image.getBytes(StandardCharsets.UTF_8)))
+            throw new ImageUploadFailedException("The image is not in Base64");
+
+        byte[] bytes = Base64.getDecoder().decode(image);
+
+        Blob blob = bucket.create(fileName, bytes, MIME_TYPE);
+        blob.createAcl(Acl.of(Acl.User.ofAllUsers(), Acl.Role.READER));
+    }
+
+
+    private boolean checkIfItsBase64(byte[] bytes) {
+
+        return org.apache.commons.codec.binary.Base64.isBase64(bytes);
+    }
+
+
+    private void deleteImage(Bucket bucket, String image) {
+
+        StringBuilder uuid = new StringBuilder(image.replace(BUCKET_URL, ""));
+
+        Blob fileExists = bucket.get(uuid.toString());
+
+        if (fileExists.exists()) {
+
+            try {
+
+                fileExists.delete();
+
+            } catch (Exception ex) {
+                throw new ImageUploadFailedException("Image uploading failed! Please try again later.");
+            }
+        } else {
+            throw new ResourceNotFoundException("File with the UUID " + uuid + " not found.");
+        }
+    }
 }
