@@ -34,6 +34,6 @@ jobs:
       
     - name: Push to docker hub
       run: |
-        docker tag ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
-        docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
+        docker tag ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest ${{secrets.DOCKER_USERNAME}}/bonsaicorner:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{github.run_id}}
         docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest
