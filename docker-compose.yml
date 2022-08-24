@@ -19,6 +19,7 @@ services:
       - ratz-network
   bonsaicorner:
     image: ratzcom/bonsaicorner
+    build: ./
     restart: always
     working_dir: /
     environment:
