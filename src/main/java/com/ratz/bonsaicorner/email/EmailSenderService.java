@@ -17,35 +17,35 @@ import java.io.File;
 public class EmailSenderService {
 
 
-  private JavaMailSender mailSender;
+    private JavaMailSender mailSender;
 
-  public void sendSimpleEmail(String toEmail, String body, String subject) {
+    public void sendSimpleEmail(String toEmail, String body, String subject) {
 
-    SimpleMailMessage message = new SimpleMailMessage();
-    message.setFrom(APIConstants.COMPANY_EMAIL);
-    message.setTo(toEmail);
-    message.setText(body);
-    message.setSubject(subject);
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setFrom(APIConstants.COMPANY_EMAIL);
+        message.setTo(toEmail);
+        message.setText(body);
+        message.setSubject(subject);
 
-    mailSender.send(message);
+        mailSender.send(message);
 
-  }
+    }
 
-  public void sendEmailWithAttachment(String toEmail, String body, String subject, String attachment) throws MessagingException {
+    public void sendEmailWithAttachment(String toEmail, String body, String subject, String attachment) throws MessagingException {
 
-    MimeMessage mimeMessage = mailSender.createMimeMessage();
+        MimeMessage mimeMessage = mailSender.createMimeMessage();
 
-    MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
-    mimeMessageHelper.setFrom(APIConstants.COMPANY_EMAIL);
-    mimeMessageHelper.setTo(toEmail);
-    mimeMessageHelper.setText(body);
-    mimeMessageHelper.setSubject(subject);
+        MimeMessageHelper mimeMessageHelper = new MimeMessageHelper(mimeMessage, true);
+        mimeMessageHelper.setFrom(APIConstants.COMPANY_EMAIL);
+        mimeMessageHelper.setTo(toEmail);
+        mimeMessageHelper.setText(body);
+        mimeMessageHelper.setSubject(subject);
 
-    FileSystemResource fileSystem = new FileSystemResource(new File((attachment)));
+        FileSystemResource fileSystem = new FileSystemResource(new File((attachment)));
 
-    mimeMessageHelper.addAttachment(fileSystem.getFilename(), fileSystem);
+        mimeMessageHelper.addAttachment(fileSystem.getFilename(), fileSystem);
 
-    mailSender.send(mimeMessage);
+        mailSender.send(mimeMessage);
 
-  }
+    }
 }

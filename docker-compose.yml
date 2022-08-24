@@ -20,7 +20,6 @@ services:
   bonsaicorner:
     image: ratzcom/bonsaicorner
     restart: always
-    build: ./
     working_dir: /
     environment:
       SPRING.DATASOURCE.URL: jdbc:mysql://db:3308/bonsaicorner?useTimezone=true&serverTimezone=UTC

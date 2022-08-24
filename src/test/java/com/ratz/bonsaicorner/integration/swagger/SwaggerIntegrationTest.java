@@ -10,15 +10,15 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 public class SwaggerIntegrationTest extends AbstractIntegrationTest {
 
-  @Test
-  public void shouldDisplaySwaggerUiPage() {
+    @Test
+    public void shouldDisplaySwaggerUiPage() {
 
-    String content = given().basePath("/swagger-ui/index.html").port(8888)
-        .when().get()
-        .then().statusCode(200).extract().body().asString();
+        String content = given().basePath("/swagger-ui/index.html").port(80)
+                .when().get()
+                .then().statusCode(200).extract().body().asString();
 
-    assertTrue(content.contains("Swagger UI"));
+        assertTrue(content.contains("Swagger UI"));
 
 
-  }
+    }
 }
