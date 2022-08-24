@@ -38,7 +38,6 @@ jobs:
       run: docker compose build
 
     - name: Push to docker hub
-      working-directory: ./
       run: |
         docker tag ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
         docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
