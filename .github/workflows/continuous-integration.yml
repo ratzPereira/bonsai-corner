@@ -26,7 +26,7 @@ jobs:
 
     - name: Build Application JAR
       working-directory: ./
-      run: mvn clean package
+      run: mvn clean package -DskipTests
 
     - name: Build and push Docker images
       uses: docker/build-push-action@v3.1.0
