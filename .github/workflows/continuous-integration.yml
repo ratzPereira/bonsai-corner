@@ -23,14 +23,12 @@ jobs:
         java-version: '18'
         distribution: 'adopt'
         cache: maven
+    - name: Docker Compose Build
+      run: docker compose build
 
-    - name: Build Application JAR
-      working-directory: ./
-      run: mvn clean package -DskipTests
+    - name: Push to Docker Hub Container Registry
+      run: |
+        docker tag ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
 
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v3.1.0
-      with:
-        context: .
-        push: true
-        tags: ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:${{ github.run_id }}
+        docker push ${{ secrets.DOCKER_USERNAME }}/bonsaicorner:latest
