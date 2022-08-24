@@ -28,10 +28,6 @@ jobs:
       working-directory: ./
       run: mvn clean package
 
-    - name: Docker Compose Build
-      working-directory: ./
-      run: docker compose build
-
     - name: Build and push Docker images
       uses: docker/build-push-action@v3.1.0
       with:
