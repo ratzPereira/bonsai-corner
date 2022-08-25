@@ -16,54 +16,54 @@ import java.util.Set;
 @Table(name = "species")
 public class Species implements Serializable {
 
-  @Serial
-  private static final long serialVersionUID = 1L;
+    @Serial
+    private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.AUTO)
-  private Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
 
-  @Column(name = "name")
-  private String speciesName;
+    @Column(name = "name")
+    private String speciesName;
 
-  @Column(name = "description")
-  private String description;
+    @Column(name = "description")
+    private String description;
 
-  @Column(name = "watering")
-  private String watering;
+    @Column(name = "watering")
+    private String watering;
 
-  @Column(name = "soil")
-  private String soil;
+    @Column(name = "soil")
+    private String soil;
 
-  @Column(name = "regions")
-  private String regions;
+    @Column(name = "regions")
+    private String regions;
 
-  @Column(name = "pruning")
-  private String pruning;
+    @Column(name = "pruning")
+    private String pruning;
 
-  @Column(name = "transplant")
-  private String transplant;
+    @Column(name = "transplant")
+    private String transplant;
 
-  @Column(name = "propagation")
-  private String propagation;
+    @Column(name = "propagation")
+    private String propagation;
 
-  @Column(name = "fertilizing")
-  private String fertilizing;
+    @Column(name = "fertilizing")
+    private String fertilizing;
 
-  @Column(name = "sun_exposure")
-  private String sunExposure;
+    @Column(name = "sun_exposure")
+    private String sunExposure;
 
-  @Column(name = "common_bonsai_styles")
-  @ElementCollection
-  @CollectionTable(name = "species_common_bonsai_styles", joinColumns = @JoinColumn(name = "species_id"))
-  Set<String> commonBonsaiStyles;
+    @Column(name = "common_bonsai_styles")
+    @ElementCollection(fetch = FetchType.EAGER)
+    @CollectionTable(name = "species_common_bonsai_styles", joinColumns = @JoinColumn(name = "species_id"))
+    Set<String> commonBonsaiStyles;
 
-  @ManyToOne
-  @JoinColumn(name = "family_id", nullable = false)
-  private Family family;
+    @ManyToOne
+    @JoinColumn(name = "family_id", nullable = false)
+    private Family family;
 
-  @ManyToOne
-  @JoinColumn(name = "treeGroup_id", nullable = false)
-  private TreeGroup treeGroup;
+    @ManyToOne
+    @JoinColumn(name = "treeGroup_id", nullable = false)
+    private TreeGroup treeGroup;
 
 }

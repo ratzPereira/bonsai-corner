@@ -1,4 +1,4 @@
-package com.ratz.bonsaicorner.integration.controller.json;
+package com.ratz.bonsaicorner.integration.controller.xml;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -17,12 +17,12 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class AuthControllerJsonTest extends AbstractIntegrationTest {
+public class AuthControllerXmlTest extends AbstractIntegrationTest {
 
     private static TokenDTO tokenDTO;
 
     @Test
-    @Order(1)
+    @Order(0)
     public void signIn() {
 
         AccountCredentialsDTO user = new AccountCredentialsDTO("Ratz", "admin123");
@@ -30,7 +30,7 @@ public class AuthControllerJsonTest extends AbstractIntegrationTest {
         tokenDTO = given()
                 .basePath("/auth/signIn")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .body(user)
                 .when()
                 .post()
@@ -42,25 +42,22 @@ public class AuthControllerJsonTest extends AbstractIntegrationTest {
     }
 
     @Test
-    @Order(2)
+    @Order(1)
     public void refresh() throws JsonMappingException, JsonProcessingException {
 
-
-        var newTokenVO = given()
+        TokenDTO newTokenDTO = given()
                 .basePath("/auth/refresh")
                 .port(TestConfigs.SERVER_PORT)
-                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .contentType(TestConfigs.CONTENT_TYPE_XML)
                 .pathParam("username", tokenDTO.getUsername())
                 .header(TestConfigs.HEADER_PARAM_AUTHORIZATION, "Bearer " + tokenDTO.getRefreshToken())
                 .when()
                 .put("{username}")
                 .then()
                 .statusCode(200)
-                .extract()
-                .body()
-                .as(TokenDTO.class);
+                .extract().body().as(TokenDTO.class);
 
-        assertNotNull(newTokenVO.getAccessToken());
-        assertNotNull(newTokenVO.getRefreshToken());
+        assertNotNull(newTokenDTO.getAccessToken());
+        assertNotNull(newTokenDTO.getRefreshToken());
     }
 }
