@@ -1,11 +1,16 @@
 package com.ratz.bonsaicorner.integration.controller.json;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.ratz.bonsaicorner.config.TestConfigs;
+import com.ratz.bonsaicorner.integration.AbstractIntegrationTest;
 import com.ratz.bonsaicorner.integration.dto.AccountCredentialsDTO;
 import com.ratz.bonsaicorner.integration.dto.BonsaiDTO;
 import com.ratz.bonsaicorner.integration.dto.TokenDTO;
+import com.ratz.bonsaicorner.model.Species;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.filter.log.LogDetail;
 import io.restassured.filter.log.RequestLoggingFilter;
@@ -14,21 +19,28 @@ import io.restassured.specification.RequestSpecification;
 import org.junit.jupiter.api.*;
 import org.springframework.boot.test.context.SpringBootTest;
 
+import java.time.LocalDate;
+import java.util.HashSet;
+
 import static io.restassured.RestAssured.given;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
 @TestMethodOrder(MethodOrderer.OrderAnnotation.class)
-public class BonsaiControllerJsonTest {
+public class BonsaiControllerJsonTest extends AbstractIntegrationTest {
 
     private static ObjectMapper objectMapper;
     private static RequestSpecification specification;
     private static BonsaiDTO bonsaiDTO;
 
     @BeforeAll
-    public void setup() {
+    public static void setUp() {
 
-        objectMapper = new ObjectMapper();
+        objectMapper = new ObjectMapper().registerModule(new JavaTimeModule())
+                .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
         objectMapper.disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+
         bonsaiDTO = new BonsaiDTO();
     }
 
@@ -59,6 +71,48 @@ public class BonsaiControllerJsonTest {
                 .addFilter(new RequestLoggingFilter(LogDetail.ALL))
                 .addFilter(new ResponseLoggingFilter(LogDetail.ALL))
                 .build();
+
+    }
+
+    @Test
+    @Order(1)
+    @DisplayName("Should create one bonsai for the user.")
+    public void testCreateBonsai() throws JsonProcessingException {
+
+        mockBonsai();
+
+        String content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(bonsaiDTO)
+                .when()
+                .post()
+                .then()
+                .statusCode(201)
+                .extract()
+                .body()
+                .asString();
+
+        BonsaiDTO savedBonsaiDTO = objectMapper.readValue(content, BonsaiDTO.class);
+        bonsaiDTO = savedBonsaiDTO;
+
+        assertNotNull(savedBonsaiDTO.getId());
+        assertEquals(10, bonsaiDTO.getAge());
+        assertEquals("Description for my test bonsai", bonsaiDTO.getDescription());
+        assertEquals("My test bonsai", bonsaiDTO.getName());
+        assertEquals("Acer Palmatum", bonsaiDTO.getSpecies().getSpeciesName());
+    }
+
+    private void mockBonsai() {
+
+        bonsaiDTO.setId(100L);
+        bonsaiDTO.setAge(10);
+        bonsaiDTO.setBonsaiCreationDate(LocalDate.now());
+        bonsaiDTO.setName("My test bonsai");
+        bonsaiDTO.setDescription("Description for my test bonsai");
+        bonsaiDTO.setImages(new HashSet<>());
+        Species species = new Species();
+        species.setSpeciesName("Acer Palmatum");
+        bonsaiDTO.setSpecies(species);
 
     }
 }
