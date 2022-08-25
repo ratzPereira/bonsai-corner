@@ -2,6 +2,7 @@ package com.ratz.bonsaicorner.integration.controller.json;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
@@ -99,6 +100,64 @@ public class BonsaiControllerJsonTest extends AbstractIntegrationTest {
         assertEquals(10, bonsaiDTO.getAge());
         assertEquals("Description for my test bonsai", bonsaiDTO.getDescription());
         assertEquals("My test bonsai", bonsaiDTO.getName());
+        assertEquals("Acer Palmatum", bonsaiDTO.getSpecies().getSpeciesName());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Should update one bonsai for the user.")
+    public void testUpdateBonsai() throws JsonMappingException, JsonProcessingException {
+
+        bonsaiDTO.setName("Updated Name");
+        bonsaiDTO.setAge(20);
+
+        String content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .body(bonsaiDTO)
+                .when()
+                .post()
+                .then()
+                .statusCode(201)
+                .extract()
+                .body()
+                .asString();
+
+        BonsaiDTO savedBonsaiDTO = objectMapper.readValue(content, BonsaiDTO.class);
+        bonsaiDTO = savedBonsaiDTO;
+
+        assertNotNull(savedBonsaiDTO.getId());
+
+        assertEquals(savedBonsaiDTO.getId(), bonsaiDTO.getId());
+        assertEquals(20, bonsaiDTO.getAge());
+        assertEquals("Description for my test bonsai", bonsaiDTO.getDescription());
+        assertEquals("Updated Name", bonsaiDTO.getName());
+        assertEquals("Acer Palmatum", bonsaiDTO.getSpecies().getSpeciesName());
+    }
+
+    @Test
+    @Order(2)
+    @DisplayName("Should find one bonsai by id.")
+    public void testFindBonsaiById() throws JsonMappingException, JsonProcessingException {
+
+        String content = given().spec(specification)
+                .contentType(TestConfigs.CONTENT_TYPE_JSON)
+                .pathParam("id", 56)
+                .when()
+                .get("{id}")
+                .then()
+                .statusCode(200)
+                .extract()
+                .body()
+                .asString();
+
+        BonsaiDTO savedBonsaiDTO = objectMapper.readValue(content, BonsaiDTO.class);
+        bonsaiDTO = savedBonsaiDTO;
+
+        assertNotNull(savedBonsaiDTO.getId());
+
+        assertEquals(3, bonsaiDTO.getAge());
+        assertEquals("this is my description for my test bonsai", bonsaiDTO.getDescription());
+        assertEquals("Test update bonsai", bonsaiDTO.getName());
         assertEquals("Acer Palmatum", bonsaiDTO.getSpecies().getSpeciesName());
     }
 
