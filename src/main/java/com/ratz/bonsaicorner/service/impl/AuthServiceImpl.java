@@ -31,133 +31,134 @@ import java.util.List;
 @AllArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-  private AuthenticationManager authenticationManager;
-  private JwtTokenProvider tokenProvider;
-  private UserRepository userRepository;
-  private PasswordEncoder passwordEncoder;
-  private PermissionRepository permissionRepository;
-  private EmailSenderService emailSenderService;
-  private UserService userService;
-  private PasswordGenerator passwordGenerator;
+    private AuthenticationManager authenticationManager;
+    private JwtTokenProvider tokenProvider;
+    private UserRepository userRepository;
+    private PasswordEncoder passwordEncoder;
+    private PermissionRepository permissionRepository;
+    private EmailSenderService emailSenderService;
+    private UserService userService;
+    private PasswordGenerator passwordGenerator;
+  
 
-  @Override
-  @SuppressWarnings("rawtypes")
-  public ResponseEntity singIn(AccountCredentialsDTO data) {
+    @Override
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity singIn(AccountCredentialsDTO data) {
 
-    try {
-      String username = data.getUsername();
-      String password = data.getPassword();
+        try {
+            String username = data.getUsername();
+            String password = data.getPassword();
 
-      authenticationManager.authenticate(
-          new UsernamePasswordAuthenticationToken(username, password));
+            authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(username, password));
 
-      User user = userRepository.findByUsername(username).get();
+            User user = userRepository.findByUsername(username).get();
 
 
-      TokenDTO tokenResponse;
-      if (user != null) {
+            TokenDTO tokenResponse;
+            if (user != null) {
 
-        tokenResponse = tokenProvider.createAccessToken(username, user.getRoles());
-      } else {
+                tokenResponse = tokenProvider.createAccessToken(username, user.getRoles());
+            } else {
 
-        throw new UsernameNotFoundException("Username " + username + " not found!");
-      }
+                throw new UsernameNotFoundException("Username " + username + " not found!");
+            }
 
-      return ResponseEntity.ok(tokenResponse);
+            return ResponseEntity.ok(tokenResponse);
 
-    } catch (Exception e) {
+        } catch (Exception e) {
 
-      throw new BadCredentialsException("Invalid username or password!");
-    }
-  }
-
-  @Override
-  @SuppressWarnings("rawtypes")
-  public ResponseEntity refreshToken(String username, String refreshToken) {
-
-    User user = userRepository.findByUsername(username).get();
-
-    TokenDTO tokenResponse;
-
-    if (user != null) {
-
-      tokenResponse = tokenProvider.refreshToken(refreshToken);
-
-    } else {
-
-      throw new UsernameNotFoundException("Username " + username + " not found!");
+            throw new BadCredentialsException("Invalid username or password!");
+        }
     }
 
-    return ResponseEntity.ok(tokenResponse);
-  }
+    @Override
+    @SuppressWarnings("rawtypes")
+    public ResponseEntity refreshToken(String username, String refreshToken) {
 
-  @Override
-  public void registerUser(SignUpDTO signUpDTO) {
+        User user = userRepository.findByUsername(username).get();
 
+        TokenDTO tokenResponse;
 
-    if (userRepository.existsByUserName(signUpDTO.getUserName())) {
-      throw new ResourceAlreadyExistException("User with this username already exist!");
+        if (user != null) {
+
+            tokenResponse = tokenProvider.refreshToken(refreshToken);
+
+        } else {
+
+            throw new UsernameNotFoundException("Username " + username + " not found!");
+        }
+
+        return ResponseEntity.ok(tokenResponse);
     }
 
-    if (userRepository.existsByEmail(signUpDTO.getEmail())) {
-      throw new ResourceAlreadyExistException("Email already used!");
+    @Override
+    public void registerUser(SignUpDTO signUpDTO) {
+
+
+        if (userRepository.existsByUserName(signUpDTO.getUserName())) {
+            throw new ResourceAlreadyExistException("User with this username already exist!");
+        }
+
+        if (userRepository.existsByEmail(signUpDTO.getEmail())) {
+            throw new ResourceAlreadyExistException("Email already used!");
+        }
+
+        User user = new User();
+        user.setEmail(signUpDTO.getEmail());
+        user.setAccountNonExpired(true);
+        user.setAccountNonLocked(true);
+        user.setUserName(signUpDTO.getUserName());
+        user.setFirstName(signUpDTO.getFirstName());
+        user.setLastName(signUpDTO.getLastName());
+        user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
+        user.setEnabled(true);
+        user.setCredentialsNonExpired(true);
+
+        permissionRepository.findByDescription("COMMON_USER").ifPresent(role -> user.setPermissions(List.of(role)));
+
+        userRepository.save(user);
+
+        String body = "Hello " + user.getFirstName() + " " + user.getLastName() +
+                " thanks for your registration and welcome to MyBonsaiCorner! You can now add and show the world your trees!";
+
+        String subject = "Welcome to MyBonsaiCorner";
+        emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
     }
 
-    User user = new User();
-    user.setEmail(signUpDTO.getEmail());
-    user.setAccountNonExpired(true);
-    user.setAccountNonLocked(true);
-    user.setUserName(signUpDTO.getUserName());
-    user.setFirstName(signUpDTO.getFirstName());
-    user.setLastName(signUpDTO.getLastName());
-    user.setPassword(passwordEncoder.encode(signUpDTO.getPassword()));
-    user.setEnabled(true);
-    user.setCredentialsNonExpired(true);
+    @Override
+    public void changeUserPassword(PasswordChangeDTO passwordChangeDTO) {
 
-    permissionRepository.findByDescription("COMMON_USER").ifPresent(role -> user.setPermissions(List.of(role)));
+        User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
 
-    userRepository.save(user);
+        if (!user.getEmail().equals(passwordChangeDTO.getEmail()))
+            throw new ResourceNotFoundException("Wrong email or password.");
 
-    String body = "Hello " + user.getFirstName() + " " + user.getLastName() +
-        " thanks for your registration and welcome to MyBonsaiCorner! You can now add and show the world your trees!";
+        if (!userService.checkIfValidOldPassword(user, passwordChangeDTO.getOldPassword())) {
 
-    String subject = "Welcome to MyBonsaiCorner";
-    emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
-  }
+            throw new ResourceAlreadyExistException("The old password is wrong for the user " + user.getUsername());
+        }
 
-  @Override
-  public void changeUserPassword(PasswordChangeDTO passwordChangeDTO) {
+        userService.changeUserPassword(user, passwordChangeDTO.getNewPassword());
 
-    User user = userService.findByUsername(SecurityContextHolder.getContext().getAuthentication().getName());
-
-    if (!user.getEmail().equals(passwordChangeDTO.getEmail()))
-      throw new ResourceNotFoundException("Wrong email or password.");
-
-    if (!userService.checkIfValidOldPassword(user, passwordChangeDTO.getOldPassword())) {
-
-      throw new ResourceAlreadyExistException("The old password is wrong for the user " + user.getUsername());
     }
 
-    userService.changeUserPassword(user, passwordChangeDTO.getNewPassword());
+    @Override
+    public void userForgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
 
-  }
-
-  @Override
-  public void userForgotPassword(ForgotPasswordDTO forgotPasswordDTO) {
-
-    User user = userRepository.findByEmail(forgotPasswordDTO.getEmail())
-        .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
+        User user = userRepository.findByEmail(forgotPasswordDTO.getEmail())
+                .orElseThrow(() -> new ResourceNotFoundException("User not found!"));
 
 
-    String newPasswordForTheUser = passwordGenerator.nextPassword();
-    user.setPassword(passwordEncoder.encode(newPasswordForTheUser));
+        String newPasswordForTheUser = passwordGenerator.nextPassword();
+        user.setPassword(passwordEncoder.encode(newPasswordForTheUser));
 
-    String body = "Hello " + user.getFirstName() + " "
-        + user.getLastName() + " " + " your new password for MyBonsaiCorner is : " + newPasswordForTheUser + " Dont forget to change it later.";
-    String subject = "New password for MyBonsaiCorner.";
+        String body = "Hello " + user.getFirstName() + " "
+                + user.getLastName() + " " + " your new password for MyBonsaiCorner is : " + newPasswordForTheUser + " Dont forget to change it later.";
+        String subject = "New password for MyBonsaiCorner.";
 
 
-    userRepository.save(user);
-    emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
-  }
+        userRepository.save(user);
+        emailSenderService.sendSimpleEmail(user.getEmail(), body, subject);
+    }
 }
