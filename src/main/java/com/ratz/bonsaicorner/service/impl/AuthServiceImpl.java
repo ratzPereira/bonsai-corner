@@ -39,7 +39,7 @@ public class AuthServiceImpl implements AuthService {
     private EmailSenderService emailSenderService;
     private UserService userService;
     private PasswordGenerator passwordGenerator;
-  
+
 
     @Override
     @SuppressWarnings("rawtypes")

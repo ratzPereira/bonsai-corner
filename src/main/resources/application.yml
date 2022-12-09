@@ -23,7 +23,7 @@ spring:
     host: smtp.gmail.com
     port: 587
     username: mybonsaicorner@gmail.com
-    password: gzihtpczurueuwdz
+    password: rymwsrcymnbzxdcu
     properties:
       mail:
         smtp:
